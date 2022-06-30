@@ -13,7 +13,8 @@ import java.util.Set;
 public class PetOwner {
     @Id
     private int id;
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_fk")
     private User user;
 

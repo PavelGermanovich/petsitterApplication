@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration Type Page</title>
+
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"
+          rel="stylesheet"/>
+
+</head>
+<body>
+<div class="container">
+    <h1>Do you want to register as ?</h1>
+
+    <form th:action="@{/register-petsitter}" action="#">
+        <input type="submit" value="AS PETSITTER"/>
+    </form>
+    <form th:action="@{/register-owner}" action="#">
+        <input type="submit" value="AS OWNER"/>
+    </form>
+</div>
+
+</body>
+</html>

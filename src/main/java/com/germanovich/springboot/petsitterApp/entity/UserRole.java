@@ -17,4 +17,7 @@ public class UserRole {
 
     @Column(name = "role_name")
     private String roleName;
+
+    @Column(name = "role_id")
+    private String roleId;
 }

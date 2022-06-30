@@ -9,14 +9,14 @@ import javax.persistence.*;
 @Data
 public class PetsitterServiceCost {
     @EmbeddedId
-    private PetsitterServiceKey id;
+    private PetsitterServiceKey id = new PetsitterServiceKey();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("petsitterFk")
     @JoinColumn(name = "petsitter_fk")
     private PetSitter petSitter;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("serviceFk")
     @JoinColumn(name = "service_fk")
     private Service service;

@@ -12,9 +12,10 @@ import java.util.Set;
 public class PetSitter {
     @Id
     @Column(name = "petsitter_pk")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_fk")
     private User user;
 

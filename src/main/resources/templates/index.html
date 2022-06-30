@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Initial Page</title>
+
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"
+          rel="stylesheet"/>
+
+</head>
+<body>
+<div class="container">
+    <h1>Petsitter project</h1>
+    <ul class="nav pull-right">
+        <li><a th:href="@{/doLogout}" class="menu-right"> Logout </a></li>
+    </ul>
+    <ul class="nav pull-right">
+        <li><a href="/user" class="menu-right"> User profile </a></li>
+    </ul>
+    <span sec:authentication="name">Bob</span>
+    <div sec:authorize="true">
+        authorize - always
+    </div>
+
+    <div sec:authorize="false">
+        authorize - never
+    </div>
+
+    <div class="container" sec:authorize="isAnonymous()">
+        authorize - anonymous
+    </div>
+
+    <div class="container" sec:authorize="!isAnonymous()">
+        authorize - not anonymous
+    </div>
+
+    <div class="container" sec:authorize="isAuthenticated()">
+        authorize - authenticated
+    </div>
+
+    <div class="container" sec:authorize="!isAuthenticated()">
+        authorize - not authenticated
+    </div>
+
+    <div class="container" sec:authorize="hasRole('PET_SITTER')">
+        PETSITTER role
+    </div>
+
+    <div class="container" sec:authorize="hasRole('PET_OWNER')">
+        PET_OWNER role
+    </div>
+    <strong> Username: <span sec:authentication="name"></span> </strong>
+    <div th:text="${#authorization.getAuthentication()}">1</div>
+    <div th:text="${40}">1</div>
+
+
+    <div sec:authorize="hasAuthority('PET_SITTER')">
+        This content is only shown to PET_SITTER
+    </div>
+
+    <div sec:authorize="hasAuthority('PET_OWNER')">
+        This content is only shown PET_OWNER
+    </div>
+</div>
+
+</body>
+</html>

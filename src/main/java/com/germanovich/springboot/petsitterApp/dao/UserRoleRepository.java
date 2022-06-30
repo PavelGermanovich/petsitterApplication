@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRoleRepository extends CrudRepository<UserRole, Integer> {
+    UserRole findByRoleName(String roleName);
 }
