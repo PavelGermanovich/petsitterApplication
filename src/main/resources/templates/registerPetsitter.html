@@ -79,7 +79,7 @@
 
         <div class="form-group blu-margin">
             <select class="form-control" th:field="*{user.city}"  id="dropOperator">
-                <option value="0">select operator</option>
+                <option value="0" hidden="true">select operator</option>
                 <option th:each="city : ${cityList}" th:value="${city.getId()}" th:text="${city.getName()}"></option>
             </select>
         </div>

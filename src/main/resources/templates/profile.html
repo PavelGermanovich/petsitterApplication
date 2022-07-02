@@ -38,16 +38,33 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text"
-                                                                                                 class="form-control"
-                                                                                                 placeholder="enter phone number"
-                                                                                                 th:field="*{user.phone}">
+                        <div class="col-md-12">
+                            <label class="labels">Mobile Number</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="enter phone number"
+                                   th:field="*{user.phone}">
                         </div>
+
                         <div class="col-md-12"><label class="labels">City</label><input type="text"
                                                                                         class="form-control"
                                                                                         placeholder="City"
                                                                                         th:field="*{user.city.name}">
+
                         </div>
+
+                        <div class="col-md-12">
+
+                            <label class="control-label col-xs-2" for="dropOperator">City</label>
+                            <div class="col-xs-10">
+                                <select class="form-control" th:field="*{user.city.name}" id="dropOperator">
+                                    <option th:value="*{user.city.name}">select option</option>
+                                    <option th:each="city : ${cityList}" th:value="${city.getId()}"
+                                            th:text="${city.getName()}"></option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-12"><label class="labels">Email</label><input type="text"
                                                                                          class="form-control"
                                                                                          placeholder="email"
