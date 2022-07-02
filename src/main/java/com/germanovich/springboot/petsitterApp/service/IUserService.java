@@ -10,4 +10,6 @@ public interface IUserService {
     User updateExistingUser(User user) throws EmailExistException;
     PetSitter registerPetsitter(PetSitter petSitter) throws EmailExistException;
     PetOwner registerPetowner(PetOwner petOwner) throws EmailExistException;
+
+    PetOwner updatePetowner(PetOwner petOwner) throws EmailExistException;
 }

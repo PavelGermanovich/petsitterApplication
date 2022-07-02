@@ -3,7 +3,6 @@ package com.germanovich.springboot.petsitterApp.service;
 import com.germanovich.springboot.petsitterApp.dao.PetOwnerRepository;
 import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dao.UserRepository;
-import com.germanovich.springboot.petsitterApp.entity.Pet;
 import com.germanovich.springboot.petsitterApp.entity.PetOwner;
 import com.germanovich.springboot.petsitterApp.entity.PetSitter;
 import com.germanovich.springboot.petsitterApp.entity.User;
@@ -13,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
 
@@ -27,7 +26,7 @@ public class UserService implements IUserService{
     private PetOwnerRepository petOwnerRepository;
 
     @Override
-    public User registerNewUser(User user) throws EmailExistException{
+    public User registerNewUser(User user) throws EmailExistException {
         if (emailExist(user.getEmail())) {
             throw new EmailExistException("Such email already registered!");
         }
@@ -68,6 +67,15 @@ public class UserService implements IUserService{
             throw new EmailExistException("Such email already registered!");
         }
         petOwner.getUser().setPassword(passwordEncoder.encode(petOwner.getUser().getPassword()));
+        return petOwnerRepository.save(petOwner);
+    }
+
+    @Override
+    public PetOwner updatePetowner(PetOwner petOwner) throws EmailExistException {
+        if (emailExist(petOwner.getUser().getEmail())) {
+            throw new EmailExistException("Such email already registered!");
+        }
+        petOwner.setId(userRepository.findByEmail(petOwner.getUser().getEmail()).getId());
         return petOwnerRepository.save(petOwner);
     }
 }

@@ -1,16 +1,14 @@
 package com.germanovich.springboot.petsitterApp.entity;
 
+import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user_roles")
 @Data
-public class UserRole {
+public class UserRoleEntity {
     @Id
     @Column(name = "role_pk")
     private int id;
@@ -19,5 +17,6 @@ public class UserRole {
     private String roleName;
 
     @Column(name = "role_id")
-    private String roleId;
+    @Enumerated(EnumType.STRING)
+    private USER_ROLE roleId;
 }

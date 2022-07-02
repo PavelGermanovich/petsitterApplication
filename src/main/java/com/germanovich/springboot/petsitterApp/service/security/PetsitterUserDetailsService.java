@@ -2,6 +2,7 @@ package com.germanovich.springboot.petsitterApp.service.security;
 
 import com.germanovich.springboot.petsitterApp.dao.UserRepository;
 import com.germanovich.springboot.petsitterApp.entity.User;
+import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +29,7 @@ public class PetsitterUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), true, true, true, true, getAthorities(user.getUserRole().getRoleId()));
     }
 
-    private Collection<? extends GrantedAuthority> getAthorities(String role_user) {
-        return Arrays.asList(new SimpleGrantedAuthority(role_user));
+    private Collection<? extends GrantedAuthority> getAthorities(USER_ROLE role_user) {
+        return Arrays.asList(new SimpleGrantedAuthority(role_user.toString()));
     }
 }

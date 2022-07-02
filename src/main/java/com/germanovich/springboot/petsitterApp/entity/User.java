@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Data
@@ -43,5 +42,5 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "user_role_fk")
-    private UserRole userRole;
+    private UserRoleEntity userRole;
 }

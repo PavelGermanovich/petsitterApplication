@@ -26,4 +26,7 @@ public class PetOwner {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<OrderPlanned> plannedOrders;
+
+    @Column(name = "owner_description")
+    private String ownerDescription;
 }

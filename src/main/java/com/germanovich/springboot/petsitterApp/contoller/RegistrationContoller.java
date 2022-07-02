@@ -3,10 +3,7 @@ package com.germanovich.springboot.petsitterApp.contoller;
 import com.germanovich.springboot.petsitterApp.dao.PetSitterServiceCostRepository;
 import com.germanovich.springboot.petsitterApp.dao.ServiceRepository;
 import com.germanovich.springboot.petsitterApp.dao.UserRoleRepository;
-import com.germanovich.springboot.petsitterApp.entity.PetOwner;
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
-import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
-import com.germanovich.springboot.petsitterApp.entity.User;
+import com.germanovich.springboot.petsitterApp.entity.*;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import com.germanovich.springboot.petsitterApp.service.UserService;
@@ -49,7 +46,7 @@ public class RegistrationContoller {
             return new ModelAndView("registerPetsitter", "petSitter", petSitter);
         }
 
-        petSitter.getUser().setUserRole(userRoleRepository.findByRoleName(USER_ROLE.PET_SITTER.getRoleId()));
+        petSitter.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_SITTER));
         try {
             petSitter = userService.registerPetsitter(petSitter);
         } catch (EmailExistException e) {
@@ -82,7 +79,7 @@ public class RegistrationContoller {
             return new ModelAndView("registerOwner", "petOwner", petOwner);
         }
 
-        petOwner.getUser().setUserRole(userRoleRepository.findByRoleName(USER_ROLE.PET_OWNER.getRoleId()));
+        petOwner.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_OWNER));
         try {
             userService.registerPetowner(petOwner);
         } catch (EmailExistException e) {
@@ -93,4 +90,18 @@ public class RegistrationContoller {
         return new ModelAndView("redirect:/login");
     }
 
+    @PostMapping(value = "/updatePetowner")
+    public ModelAndView updatePetowner(@Valid final PetOwner petOwner, final BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("profile", "petowner", petOwner);
+        }
+
+        try {
+            userService.updatePetowner(petOwner);
+        } catch (EmailExistException e) {
+            bindingResult.addError(new FieldError("petOwner", "petOwner.user", e.getMessage()));
+            return new ModelAndView("registerOwner", "petOwner", petOwner);
+        }
+        return new ModelAndView("profile");
+    }
 }
