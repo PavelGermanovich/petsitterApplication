@@ -57,10 +57,11 @@
 
                             <label class="control-label col-xs-2" for="dropOperator">City</label>
                             <div class="col-xs-10">
-                                <select class="form-control" th:field="*{user.city.name}" id="dropOperator">
-                                    <option th:value="*{user.city.name}">select option</option>
+                                <select class="form-control" th:field="*{user.city}" id="dropOperator">
                                     <option th:each="city : ${cityList}" th:value="${city.getId()}"
-                                            th:text="${city.getName()}"></option>
+                                            th:text="${city.getName()}"
+                                            th:selected="*{user.city.name}"
+                                    ></option>
                                 </select>
                             </div>
                         </div>

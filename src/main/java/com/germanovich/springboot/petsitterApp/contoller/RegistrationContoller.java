@@ -91,16 +91,16 @@ public class RegistrationContoller {
     }
 
     @PostMapping(value = "/updatePetowner")
-    public ModelAndView updatePetowner(@Valid final PetOwner petOwner, final BindingResult bindingResult) {
+    public ModelAndView updatePetowner(@Valid final PetOwner petowner, final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("profile", "petowner", petOwner);
+            return new ModelAndView("profile", "petowner", petowner);
         }
 
         try {
-            userService.updatePetowner(petOwner);
+            userService.updatePetowner(petowner);
         } catch (EmailExistException e) {
             bindingResult.addError(new FieldError("petOwner", "petOwner.user", e.getMessage()));
-            return new ModelAndView("registerOwner", "petOwner", petOwner);
+            return new ModelAndView("registerOwner", "petOwner", petowner);
         }
         return new ModelAndView("profile");
     }
