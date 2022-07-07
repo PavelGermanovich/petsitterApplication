@@ -1,5 +1,6 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
+import com.germanovich.springboot.petsitterApp.dao.CityRepository;
 import com.germanovich.springboot.petsitterApp.dao.PetSitterServiceCostRepository;
 import com.germanovich.springboot.petsitterApp.dao.ServiceRepository;
 import com.germanovich.springboot.petsitterApp.dao.UserRoleRepository;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class RegistrationContoller {
@@ -32,6 +36,15 @@ public class RegistrationContoller {
 
     @Autowired
     private PetSitterServiceCostRepository petSitterServiceCostRepository;
+
+    @Autowired
+    private CityRepository cityRepository;
+
+    @ModelAttribute
+    private List<City> getCityList() {
+        return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
 
     @GetMapping(value = "/signup")
     public ModelAndView registrationForm() {

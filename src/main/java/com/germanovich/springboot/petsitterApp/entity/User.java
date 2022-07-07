@@ -4,8 +4,10 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -23,17 +25,22 @@ public class User {
     @NotEmpty(message = "Password confirmation is required.")
     private String passwordConfirmation;
     @Column(name = "namefirst")
+    @NotEmpty(message = "First name is required")
     private String nameFirst;
     @Column(name = "namelast")
+    @NotEmpty(message = "Last name is required")
     private String nameLast;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
     @Column(name = "created_date")
     private LocalDate createdDate;
+    @NotEmpty(message = "Phone is required")
     private String phone;
 
     @ManyToOne
     @JoinColumn(name = "city_fk")
+    @NotNull(message = "City must be specified")
+    @Valid
     private City city;
 
     @Email

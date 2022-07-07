@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ public class PetOwner {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_fk")
+    @Valid
     private User user;
 
     @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL)
@@ -28,5 +31,6 @@ public class PetOwner {
     private Set<OrderPlanned> plannedOrders;
 
     @Column(name = "owner_description")
+    @NotEmpty(message = "description is required")
     private String ownerDescription;
 }
