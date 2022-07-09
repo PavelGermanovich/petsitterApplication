@@ -41,6 +41,6 @@ public class PathController {
     @GetMapping("/register-owner")
     public ModelAndView registerOwnerPage(Model model) {
         model.addAttribute("cityList", getCityList());
-        return new ModelAndView("registerOwner", "petOwner", new PetOwner());
+        return new ModelAndView("registerOwnerBootstrap", "petOwner", new PetOwner());
     }
 }
