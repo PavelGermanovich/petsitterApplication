@@ -71,17 +71,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public PetOwner updatePetowner(PetOwner petowner) throws EmailExistException {
-        PetOwner oldVersion = petOwnerRepository.findPetOwnerByUserEmail(petowner.getUser().getEmail());
-
-        if (!oldVersion.getUser().getEmail().equals(petowner.getUser().getEmail())) {
+    public PetOwner updatePetowner(PetOwner petowner, String oldEmail) throws EmailExistException {
+        if (!oldEmail.equals(petowner.getUser().getEmail())) {
             if (emailExist(petowner.getUser().getEmail())) {
                 throw new EmailExistException("Such email already registered!");
             }
         }
-        petowner.setId(userRepository.findByEmail(petowner.getUser().getEmail()).getId());
         return petOwnerRepository.save(petowner);
     }
-
-
 }

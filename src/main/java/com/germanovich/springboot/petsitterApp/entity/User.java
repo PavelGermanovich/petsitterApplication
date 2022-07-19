@@ -1,6 +1,8 @@
 package com.germanovich.springboot.petsitterApp.entity;
 
+import com.germanovich.springboot.petsitterApp.dao.validation.OnCreate;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,11 +20,11 @@ public class User {
     @Column(name = "id_user")
     private int id;
 
-    @NotEmpty(message = "Password is required.")
+    @NotEmpty(message = "Password is required.", groups = OnCreate.class)
     private String password;
 
     @Transient
-    @NotEmpty(message = "Password confirmation is required.")
+    @NotEmpty(message = "Password confirmation is required.", groups = OnCreate.class)
     private String passwordConfirmation;
     @Column(name = "namefirst")
     @NotEmpty(message = "First name is required")
@@ -50,4 +52,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "user_role_fk")
     private UserRoleEntity userRole;
+
+    @OneToOne
+    @JoinColumn(name = "image_fk")
+    private FileDb fileDb;
 }

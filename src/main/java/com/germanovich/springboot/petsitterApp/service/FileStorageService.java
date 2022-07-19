@@ -15,13 +15,14 @@ public class FileStorageService {
     @Autowired
     FileRepository fileRepository;
 
+
     public FileDb store(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         FileDb fileDb = new FileDb(fileName, file.getContentType(), file.getBytes());
         return fileRepository.save(fileDb);
     }
 
-    public FileDb getFile(String id) {
+    public FileDb getFile(Integer id) {
         return fileRepository.findById(id).get();
     }
 

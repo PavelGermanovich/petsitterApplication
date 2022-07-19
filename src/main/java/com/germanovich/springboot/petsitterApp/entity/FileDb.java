@@ -1,21 +1,26 @@
 package com.germanovich.springboot.petsitterApp.entity;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
+@Data
 @Entity(name = "file")
 public class FileDb {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GenericGenerator(name="auto" , strategy="increment")
+    @GeneratedValue(generator = "auto")
     @Column(name = "file_pk")
-    private String id;
+    private int id;
 
     private String name;
+    @Column(columnDefinition = "LONGTEXT")
     private String type;
 
     @Lob
+    @Type(type="org.hibernate.type.ImageType")
     private byte[] data;
 
     public FileDb() {
@@ -24,38 +29,6 @@ public class FileDb {
     public FileDb(String name, String type, byte[] data) {
         this.name = name;
         this.type = type;
-        this.data = data;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
         this.data = data;
     }
 }

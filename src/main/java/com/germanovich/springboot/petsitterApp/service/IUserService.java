@@ -11,5 +11,5 @@ public interface IUserService {
     PetSitter registerPetsitter(PetSitter petSitter) throws EmailExistException;
     PetOwner registerPetowner(PetOwner petOwner) throws EmailExistException;
 
-    PetOwner updatePetowner(PetOwner petOwner) throws EmailExistException;
+    PetOwner updatePetowner(PetOwner petowner, String oldEmail) throws EmailExistException;
 }
