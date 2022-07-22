@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add pet</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+        </div>
+        <div class=" col-md-5 border-right">
+            <form action="#" th:action="@{/createPet}" th:object="${pet}" method="post" enctype="multipart/form-data">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Add pet</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">Name</label>
+                            <input type="text" class="form-control" placeholder="pet name"
+                                   th:field="*{petName}">
+                        </div>
+                        <div class="col-md-6"><label class="labels">Age</label><input type="text"
+                                                                                      class="form-control"
+                                                                                      th:field="*{age}"
+                                                                                      placeholder="pet age">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Pet type</label>
+                            <div class="col-xs-10">
+                                <select class="form-control" th:field="*{petType}">
+                                    <option th:each="petT : ${petTypeList}" th:value="${petT.getId()}"
+                                            th:text="${petT.getName()}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="labels">Pet size</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="enter pet size"
+                                   th:field="*{size}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="control-label col-xs-2" for="dropOperator">Pet sex</label>
+                            <div class="col-xs-10">
+                                <select class="form-control" th:field="*{petSex}" id="dropOperator">
+                                    <option th:value="'BOY'" th:text="Boy"></option>
+                                    <option th:value="'GIRL'" th:text="Girl"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12"><label class="labels">Breed</label><input type="text"
+                                                                                         class="form-control"
+                                                                                         placeholder="breed"
+                                                                                         th:field="*{breed}">
+                        </div>
+                        <div class="col-md-12"><label class="labels">Color</label><input type="text"
+                                                                                         class="form-control"
+                                                                                         placeholder="Color"
+                                                                                         th:field="*{color}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Has veterinar Passport?</label>
+                            <select class="form-control" th:field="*{hasVeterinarPassport}">
+                                <option th:value="true">Yes</option>
+                                <option th:value="false">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12"><label class="labels">Additional details</label><textarea type="text"
+                                                                                                         class="form-control"
+                                                                                                         placeholder="Description"
+                                                                                                         th:field="*{description}"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels">Photo upload</label>
+                            <input type="file" name="petImage"/>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <input class="btn btn-primary profile-button" type="submit" value="Add pet"/>
+                    </div>
+                    <!--                    <div th:switch="${message}">-->
+                    <!--                        <div th:case="'Success'" class="alert alert-success">-->
+                    <!--                            <strong>Success!</strong> Operation performed successfully.-->
+                    <!--                        </div>-->
+                    <!--                        <div th:case="'Failed'" class="alert alert-danger">-->
+                    <!--                            <strong>Failure!</strong> Operation failed. Please try again-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -3,7 +3,6 @@ package com.germanovich.springboot.petsitterApp.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -24,7 +23,7 @@ public class PetOwner {
 
     @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Pet> pet;
+    private List<Pet> petList;
 
     @OneToMany(mappedBy = "petOwner")
     @ToString.Exclude

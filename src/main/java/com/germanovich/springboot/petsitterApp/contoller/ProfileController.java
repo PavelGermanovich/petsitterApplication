@@ -1,15 +1,15 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
 import com.germanovich.springboot.petsitterApp.dao.*;
-import com.germanovich.springboot.petsitterApp.entity.City;
-import com.germanovich.springboot.petsitterApp.entity.FileDb;
-import com.germanovich.springboot.petsitterApp.entity.PetOwner;
+import com.germanovich.springboot.petsitterApp.entity.*;
+import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import com.germanovich.springboot.petsitterApp.service.FileStorageService;
 import com.germanovich.springboot.petsitterApp.service.UserService;
 import com.germanovich.springboot.petsitterApp.validation.EmailExistException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +17,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
@@ -57,6 +56,7 @@ public class ProfileController {
     @Autowired
     private UserRepository userRepository;
 
+    @ModelAttribute(name = "cityList")
     private List<City> getCityList() {
         return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
@@ -64,27 +64,43 @@ public class ProfileController {
 
     @ModelAttribute
     @PreAuthorize("hasAnyAuthority('PET_OWNER')")
-    public void getUserCommonData(Model model, Principal principal) {
+    public void getOwnerCommonData(Model model, Principal principal) {
         PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(principal.getName());
         model.addAttribute("petowner", petOwner);
-        model.addAttribute("cityList", getCityList());
+    }
+
+    @ModelAttribute
+    @PreAuthorize("hasAuthority('PET_SITTER')")
+    public void getSitterCommonData(Model model, Principal principal) {
+        PetSitter petSitter = petsitterRepository.findPetSitterByUserEmail(principal.getName());
+        model.addAttribute("petsitter", petSitter);
     }
 
     @GetMapping("/user")
-    public String userProfile() {
-        return "profile";
+    public String petOwnerProfile(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName());
+        if (user.getUserRole().getRoleId().equals(USER_ROLE.PET_SITTER)) {
+            return "petsitterProfile";
+        } else {
+            return "petownerProfile";
+        }
     }
 
-    @GetMapping("/product/image/{id}")
+    @GetMapping("/profile/image/{id}")
     public void showProductImage(@PathVariable int id,
                                  HttpServletResponse response) throws IOException {
-        response.setContentType("image/jpeg"); // Or whatever format you wanna use
+        InputStream in;
+        if (id == -1) {
+            in = getClass()
+                    .getResourceAsStream("/templates/image/profileImage.jpeg");
+            response.setContentType("image/jpeg");
+        } else {
+            FileDb fileDb = fileRepository.getById(id);
+            in = new ByteArrayInputStream(fileDb.getData());
+            response.setContentType(fileDb.getType());
+        }
 
-        FileDb fileDb = fileRepository.getById(id);
-
-        InputStream is = new ByteArrayInputStream(fileDb.getData());
-        response.setContentType(fileDb.getType());
-        IOUtils.copy(is, response.getOutputStream());
+        IOUtils.copy(in, response.getOutputStream());
     }
 
     @PostMapping(value = "/updatePetowner")
@@ -112,7 +128,7 @@ public class ProfileController {
 
         if (!violations.isEmpty()) {
             model.addAttribute("message", "Failed");
-            return new ModelAndView("profile", "petOwner", petownerForm);
+            return new ModelAndView("petownerProfile", "petOwner", petownerForm);
         }
 
         try {
@@ -125,20 +141,32 @@ public class ProfileController {
 
         model.addAttribute("message", "Success");
 
-        return new ModelAndView("profile");
+        return new ModelAndView("petownerProfile");
     }
 
     @PostMapping(value = "/updateProfileImage")
     public ModelAndView updateProfileImage(@RequestParam("file") MultipartFile multipartFile, Principal principal) {
-        PetOwner petOwnerExisting = petOwnerRepository.findPetOwnerByUserEmail(principal.getName());
+        User user = userRepository.findByEmail(principal.getName());
         try {
-            petOwnerExisting.getUser().setFileDb(fileStorageService.store(multipartFile));
+            user.setFileDb(fileStorageService.store(multipartFile));
         } catch (IOException e) {
             //toDo add error here in case failure
             e.printStackTrace();
         }
-        userRepository.save(petOwnerExisting.getUser());
+        userRepository.save(user);
 
-        return new ModelAndView("profile","petOwner", petOwnerExisting);
+        if (user.getUserRole().getRoleId().equals(USER_ROLE.PET_SITTER)) {
+            PetSitter petSitter = petsitterRepository.findPetSitterByUserEmail(user.getEmail());
+            return new ModelAndView("petsitterProfile", "petsitter", petSitter);
+        } else {
+            PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(user.getEmail());
+            return new ModelAndView("petownerProfile", "petOwner", petOwner);
+        }
+    }
+
+    @PostMapping(value = "/changePassword")
+    public ModelAndView changePassword() {
+        //toDo add change password here
+        return new ModelAndView("petownerProfile");
     }
 }

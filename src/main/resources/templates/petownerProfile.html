@@ -13,49 +13,95 @@
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="col-md-3 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5"
-                                                                                         width="150px"
-                                                                                         src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-                                                                                         th:src="@{'product/image/' + ${petowner.user.fileDb.id}}"
-            >
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <img class="rounded-circle mt-5"
+                     th:with="imageURI=${petowner.user.fileDb != null} ? ${petowner.user.fileDb.id} : '-1'"
+                     width="150px"
+                     src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                     th:src="@{'profile/image/' + ${imageURI}}">
                 <!-- Button to Open the Modal -->
 
                 <!-- The Modal -->
                 <div class="modal" id="updateImage">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form th:action="@{/updateProfileImage}" method="post" action="#" enctype="multipart/form-data">
+                            <form th:action="@{/updateProfileImage}" method="post" action="#"
+                                  enctype="multipart/form-data">
 
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                                <h4 class="modal-title">Update user image</h4>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="modal-body">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Update user image</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
 
-                                <p>Please upload new image</p>
-                                <div class="row mt-3">
-                                    <div class="col-md-12">
-                                        <label class="labels">Photo upload</label>
-                                        <input type="file" name="file"/>
+                                    <p>Please upload new image</p>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <label class="labels">Photo upload</label>
+                                            <input type="file" name="file"/>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-danger">Update</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Update</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
 
+                <div class="modal" id="changePassword">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form th:action="@{/changePassword}" method="post" action="#">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Change password</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+
+                                    <p>Please fill the following fields</p>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <label class="labels">Old password</label>
+                                            <input type="password"
+                                                   class="form-control"
+                                                   placeholder="enter old password">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="labels">New password</label>
+                                            <input type="password"
+                                                   class="form-control"
+                                                   placeholder="enter new password">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="labels">New password confirmation</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   placeholder="New password confirmation">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Update</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <span
                         class="font-weight-bold" th:text="${petowner.getUser().nameFirst}">Edogaru</span><span
-                        class="text-black-50"
-                        th:text="${petowner.getUser().email}">edogaru@mail.com.my</span><span>
+                    class="text-black-50"
+                    th:text="${petowner.getUser().email}">edogaru@mail.com.my</span><span>
                 </span>
                 <p></p>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateImage">
@@ -139,9 +185,27 @@
             </form>
         </div>
         <div class="col-md-4">
+            <figure class="figure">
+                <img th:src="${petowner.getPetList().get(0).getFileDb().getData()}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
+                <figcaption class="figure-caption">A caption for the above image.</figcaption>
+            </figure>
+            <div th:switch="${messagePetCreated}">
+                <div th:case="'Success'" class="alert alert-success">
+                    <strong>Success!</strong> Pet has beed added.
+                </div>
+                <div th:case="'Failed'" class="alert alert-danger">
+                    <strong>Failure!</strong> Operation failed. Please try again
+                </div>
+            </div>
             <div class="p-3 py-5">
                 <div class="d-flex justify-content-between align-items-center experience">
                     <span>My pets</span>
+                </div>
+                <br/>
+                <div class="col-md-12">
+                    <a th:href="@{/addPet}" class="btn btn-primary">
+                        Add pet
+                    </a>
                 </div>
                 <br>
                 <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"

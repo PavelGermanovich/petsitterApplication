@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PetsitterRepository extends CrudRepository<PetSitter, Integer> {
+    PetSitter findPetSitterByUserEmail(String email);
 }

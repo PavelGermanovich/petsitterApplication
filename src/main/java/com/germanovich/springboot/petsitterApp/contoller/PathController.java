@@ -1,9 +1,9 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
 import com.germanovich.springboot.petsitterApp.dao.CityRepository;
-import com.germanovich.springboot.petsitterApp.entity.City;
-import com.germanovich.springboot.petsitterApp.entity.PetOwner;
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
+import com.germanovich.springboot.petsitterApp.dao.PetRepository;
+import com.germanovich.springboot.petsitterApp.dao.PetTypeRepository;
+import com.germanovich.springboot.petsitterApp.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +20,18 @@ import java.util.stream.StreamSupport;
 public class PathController {
     @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private PetRepository petRepository;
+    @Autowired
+    private PetTypeRepository petTypeRepository;
 
     private List<City> getCityList() {
         return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    private List<PetType> getPetType() {
+        return StreamSupport.stream(petTypeRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
 
@@ -42,5 +51,12 @@ public class PathController {
     public ModelAndView registerOwnerPage(Model model) {
         model.addAttribute("cityList", getCityList());
         return new ModelAndView("registerOwnerBootstrap", "petOwner", new PetOwner());
+    }
+
+    @GetMapping("/addPet")
+    public String addingPetPage(Model model) {
+        model.addAttribute("pet", new Pet());
+        model.addAttribute("petTypeList", getPetType());
+        return "addPet";
     }
 }
