@@ -40,7 +40,7 @@ public class Pet {
     @Column(columnDefinition = "LONGTEXT", name = "description")
     private String description;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_fk")
     private FileDb fileDb;
 }

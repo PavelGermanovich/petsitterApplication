@@ -30,4 +30,8 @@ public class PetSitter {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<OrderPlanned> plannedOrders;
+
+    @ManyToOne
+    @JoinColumn(name = "pet_size_limit_fk")
+    private PetSizeLimit petSizeLimtis;
 }

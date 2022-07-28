@@ -12,7 +12,7 @@ public class InitialContoller {
 
     @RequestMapping("/")
     public String homePage() {
-        return "index";
+        return "indexFromForm";
     }
 
 }

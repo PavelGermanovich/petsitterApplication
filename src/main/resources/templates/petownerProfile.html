@@ -185,10 +185,6 @@
             </form>
         </div>
         <div class="col-md-4">
-            <figure class="figure">
-                <img th:src="${petowner.getPetList().get(0).getFileDb().getData()}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
-                <figcaption class="figure-caption">A caption for the above image.</figcaption>
-            </figure>
             <div th:switch="${messagePetCreated}">
                 <div th:case="'Success'" class="alert alert-success">
                     <strong>Success!</strong> Pet has beed added.
@@ -198,25 +194,26 @@
                 </div>
             </div>
             <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center experience">
-                    <span>My pets</span>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">My pets:</h4>
                 </div>
-                <br/>
-                <div class="col-md-12">
+                <div>
+                    <div th:each="pet : ${petowner.getPetList()}">
+                            <figure class="figure">
+                                <img th:src="@{'pet/image/' + ${pet.getFileDb().getId()}}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
+                                <figcaption class="figure-caption" th:text="${pet.getPetType().getName()} + ': ' + ${pet.getPetName()} + ' ' + ${pet.getBreed()}">A caption for the above image.</figcaption>
+                                <a th:href="@{'pet?id=' + ${pet.getId()}}" class="btn btn-secondary">
+                                    Pet details
+                                </a>
+                            </figure>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <a th:href="@{/addPet}" class="btn btn-primary">
                         Add pet
                     </a>
                 </div>
                 <br>
-                <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
-                                                                                                   class="form-control"
-                                                                                                   placeholder="experience"
-                                                                                                   value=""></div>
-                <br>
-                <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
-                                                                                              class="form-control"
-                                                                                              placeholder="additional details"
-                                                                                              value=""></div>
             </div>
         </div>
     </div>

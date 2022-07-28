@@ -3,96 +3,154 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Registration Page</title>
+    <title>Petsitter Registration</title>
 
-    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"
-          rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
 <body>
-<div class="container">
-    <h1>Registration Petsitter page</h1>
-    <form id="petsitRegForm" th:action="@{/petsitter/register}" th:object="${petsitter}" action="#" method="post"
-          class="form-horizontal">
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+        </div>
+        <div class=" col-md-5 border-right">
 
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.email')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="email">Email</label>
-            <div class="col-xs-10">
-                <input id="email" type="email" title="user.email" th:field="*{user.email}"/>
-                <span th:if="${#fields.hasErrors('user.email')}" th:errors="*{user.email}" class="help-block">Email Error</span>
-            </div>
-        </div>
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.password')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="password">Password</label>
-            <div class="col-xs-10user.email">
-                <input id="password" type="password" title="password" th:field="*{user.password}"/>
-                <span th:if="${#fields.hasErrors('user.password')}" th:errors="*{user.password}" class="help-block">Password Error</span>
-            </div>
-        </div>
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.passwordConfirmation')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="passwordConfirmation">Password Confirmation</label>
-            <div class="col-xs-10">
-                <input id="passwordConfirmation" type="password" title="passwordConfirmation"
-                       th:field="*{user.passwordConfirmation}"/>
-                <span th:if="${#fields.hasErrors('user.passwordConfirmation')}" th:errors="*{user.passwordConfirmation}"
-                      class="help-block">Password Confirmation Error</span>
-            </div>
-        </div>
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.nameFirst')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="nameFirst">First name</label>
-            <div class="col-xs-10">
-                <input id="nameFirst" type="text" title="first name"
-                       th:field="*{user.nameFirst}"/>
-                <span th:if="${#fields.hasErrors('user.nameFirst')}" th:errors="*{user.nameFirst}"
-                      class="help-block">first name error</span>
-            </div>
-        </div>
+            <form id="petsitRegForm" th:action="@{/petsitter/register}" th:object="${petsitter}" action="#"
+                  method="post" enctype="multipart/form-data">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Petsitter Settings</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6" th:classappend="${#fields.hasErrors('user.nameFirst')} ? 'has-error'">
+                            <label class="labels" for="nameFirst">First name</label>
+                            <div>
+                                <input id="nameFirst" type="text" title="first name" class="form-control"
+                                       th:field="*{user.nameFirst}"/>
+                                <span th:if="${#fields.hasErrors('user.nameFirst')}" th:errors="*{user.nameFirst}"
+                                      class="help-block">first name error</span>
+                            </div>
+                        </div>
 
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.nameLast')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="namelast">Last name</label>
-            <div class="col-xs-10">
-                <input id="nameLast" type="text" title="first last"
-                       th:field="*{user.nameLast}"/>
-                <span th:if="${#fields.hasErrors('user.nameLast')}" th:errors="*{user.nameLast}"
-                      class="help-block">last name error</span>
-            </div>
-        </div>
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.phone')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="phone">Phone</label>
-            <div class="col-xs-10">
-                <input id="phone" type="text" title="phone"
-                       th:field="*{user.phone}"/>
-                <span th:if="${#fields.hasErrors('user.phone')}" th:errors="*{user.phone}"
-                      class="help-block">phone error</span>
-            </div>
-        </div>
-        <div class="form-group" th:classappend="${#fields.hasErrors('user.birthdate')} ? 'has-error'">
-            <label class="control-label col-xs-2" for="birthdate">Birthdate</label>
-            <div class="col-xs-10">
+                        <div class="col-md-6" th:classappend="${#fields.hasErrors('user.nameLast')} ? 'has-error'">
+                            <label class="labels" for="namelast">Last name</label>
+                            <div>
+                                <input id="nameLast" type="text" title="first last" class="form-control"
+                                       th:field="*{user.nameLast}"/>
+                                <span th:if="${#fields.hasErrors('user.nameLast')}" th:errors="*{user.nameLast}"
+                                      class="help-block">last name error</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <input id="birthdate" type="date" title="birthdate" th:value="*{user.birthdate}"
-                       th:field="*{{user.birthdate}}" />
-                <span th:if="${#fields.hasErrors('user.birthdate')}" th:errors="*{user.birthdate}"
-                      class="help-block">birthdate error</span>
-            </div>
-        </div>
+                    <div class="row mt-3">
 
-        <div class="form-group blu-margin">
-            <select class="form-control" th:field="*{user.city}"  id="dropOperator">
-                <option value="0" hidden="true">select operator</option>
-                <option th:each="city : ${cityList}" th:value="${city.getId()}" th:text="${city.getName()}"></option>
-            </select>
-        </div>
-        <input type="checkbox" name="petsitCheckbox" id ="petsitCheckbox" th:checked="${petsitCheckbox}" />
-        <label for="petsitCheckbox" data-value="walker" class="form__label label--checkbox">Petsitting</label>
-        <input type="checkbox" name="petwalkgingCheckbox" id ="petwalkgingCheckbox" th:checked="${petwalkgingCheckbox}" />
-        <label for="petwalkgingCheckbox" data-value="walker" class="form__label label--checkbox">Pet walking</label>
+                        <div class="col-md-12" th:classappend="${#fields.hasErrors('user.email')} ? 'has-error'">
+                            <label class="labels" for="email">Email</label>
+                            <div>
+                                <input id="email" type="email" title="user.email" th:field="*{user.email}"
+                                       class="form-control"
+                                />
+                                <span th:if="${#fields.hasErrors('user.email')}" th:errors="*{user.email}"
+                                      class="help-block">Email Error</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12" th:classappend="${#fields.hasErrors('user.password')} ? 'has-error'">
+                            <label class="labels" for="password">Password</label>
+                            <div>
+                                <input class="form-control" id="password" type="password" title="password"
+                                       th:field="*{user.password}"/>
+                                <span th:if="${#fields.hasErrors('user.password')}" th:errors="*{user.password}"
+                                      class="help-block">Password Error</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12"
+                             th:classappend="${#fields.hasErrors('user.passwordConfirmation')} ? 'has-error'">
+                            <label class="labels" for="passwordConfirmation">Password
+                                Confirmation</label>
+                            <div>
+                                <input id="passwordConfirmation" type="password" title="passwordConfirmation"
+                                       class="form-control"
+                                       th:field="*{user.passwordConfirmation}"/>
+                                <span th:if="${#fields.hasErrors('user.passwordConfirmation')}"
+                                      th:errors="*{user.passwordConfirmation}"
+                                      class="help-block">Password Confirmation Error</span>
+                            </div>
+                        </div>
 
-        <div class="form-actions col-xs-offset-2 col-xs-10">
-            <input type="submit" class="btn btn-primary" value="Register"/>
+                        <div class="col-md-12" th:classappend="${#fields.hasErrors('user.phone')} ? 'has-error'">
+                            <label class="labels" for="phone">Phone</label>
+                            <div>
+                                <input class="form-control" id="phone" type="text" title="phone"
+                                       th:field="*{user.phone}"/>
+                                <span th:if="${#fields.hasErrors('user.phone')}" th:errors="*{user.phone}"
+                                      class="help-block">phone error</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12" th:classappend="${#fields.hasErrors('user.birthdate')} ? 'has-error'">
+                            <label class="labels" for="birthdate">Birthdate</label>
+                            <div>
+                                <input class="form-control" id="birthdate" type="date" title="birthdate"
+                                       th:value="*{user.birthdate}"
+                                       th:field="*{{user.birthdate}}"/>
+                                <span th:if="${#fields.hasErrors('user.birthdate')}" th:errors="*{user.birthdate}"
+                                      class="help-block">birthdate error</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="control-label col-xs-2" for="dropOperator">City</label>
+                            <select class="form-control" th:field="*{user.city}" id="dropOperator">
+                                <option value="0" hidden="true">select operator</option>
+                                <option th:each="city : ${cityList}" th:value="${city.getId()}"
+                                        th:text="${city.getName()}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="control-label col-xs-2" for="dropOperator">Pet size which you are able to adopt</label>
+                            <select class="form-control" th:field="*{petSizeLimtis}">
+                                <option value="0" hidden="true">select pet size</option>
+                                <option th:each="petSize : ${sizeLimits}" th:value="${petSize.getId()}"
+                                        th:text="${petSize.getName()} + '(before ' + ${petSize.getSizeMax()} + ' kg)'"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="labels" for="dropOperator">Services:</label>
+                            <br/>
+                            <input type="checkbox" name="petsitCheckbox" id="petsitCheckbox"
+                                   th:checked="${petsitCheckbox}"/>
+                            <label for="petsitCheckbox" data-value="walker"
+                                   class="form__label label--checkbox">Petsitting</label>
+                            <input type="checkbox" name="petwalkgingCheckbox" id="petwalkgingCheckbox"
+                                   th:checked="${petwalkgingCheckbox}"/>
+                            <label for="petwalkgingCheckbox" data-value="walker" class="form__label label--checkbox">Pet
+                                walking</label>
+                        </div>
+                        <div class="col-md-12" th:classappend="${#fields.hasErrors('description')} ? 'has-error'">
+                            <label class="labels">Description</label>
+                            <textarea type="text"
+                                      class="form-control"
+                                      placeholder="Pet sitter description"
+                                      th:field="*{description}"></textarea>
+                            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+                                  class="help-block">birthdate error</span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label class="labels">Photo upload</label>
+                            <input type="file" name="file"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 text-center">
+                    <input type="submit" class="btn btn-primary profile-button" value="Register"/>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
-
 </body>
 </html>

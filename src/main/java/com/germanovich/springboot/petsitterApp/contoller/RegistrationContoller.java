@@ -13,6 +13,7 @@ import com.germanovich.springboot.petsitterApp.service.UserService;
 import com.germanovich.springboot.petsitterApp.validation.EmailExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -62,9 +63,16 @@ public class RegistrationContoller {
     @PostMapping(value = "/petsitter/register")
     public ModelAndView registerPetsitter(@Valid PetSitter petSitter,
                                           @ModelAttribute("petwalkgingCheckbox") String petwalkgingCheckbox,
-                                          @ModelAttribute("petsitCheckbox") String petsitCheckbox, final BindingResult bindingResult) {
+                                          @ModelAttribute("petsitCheckbox") String petsitCheckbox, final BindingResult bindingResult,
+                                          @RequestParam("file") MultipartFile multipartFile, Model model) {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("registerPetsitter", "petSitter", petSitter);
+        }
+
+        try {
+            petSitter.getUser().setFileDb(storageService.store(multipartFile));
+        } catch (Exception e) {
+            bindingResult.addError(new FieldError("petSitter", "petSitter.user.fileDb", e.getMessage()));
         }
 
         petSitter.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_SITTER));
@@ -90,7 +98,11 @@ public class RegistrationContoller {
             petSitterServiceCostRepository.save(petsitterServiceCost);
         }
 
-        return new ModelAndView("redirect:/login");
+        model.addAttribute("petsitterRegisterMessage", "Success");
+
+        ModelAndView loginPage = new ModelAndView("redirect:/login");
+        loginPage.addObject("petsitterRegisterMessage", "Success");
+        return loginPage;
     }
 
     @Validated(OnCreate.class)
@@ -98,7 +110,7 @@ public class RegistrationContoller {
     public ModelAndView registerPetowner(@Valid final PetOwner petOwner, final BindingResult bindingResult,
                                          @RequestParam("file") MultipartFile multipartFile) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("registerOwnerBootstrap", "petOwner", petOwner);
+            return new ModelAndView("registerOwner", "petOwner", petOwner);
         }
 
         try {
@@ -112,7 +124,7 @@ public class RegistrationContoller {
             userService.registerPetowner(petOwner);
         } catch (EmailExistException e) {
             bindingResult.addError(new FieldError("petOwner", "petOwner.user", e.getMessage()));
-            return new ModelAndView("registerOwnerBootstrap", "petOwner", petOwner);
+            return new ModelAndView("registerOwner", "petOwner", petOwner);
         }
 
         return new ModelAndView("redirect:/login");

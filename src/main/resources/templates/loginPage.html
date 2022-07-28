@@ -36,6 +36,11 @@
 
         <a class="btn btn-default" th:href="@{/signup}">Sign Up</a>
     </form>
+    <div th:switch="${petsitterRegisterMessage}">
+        <div th:case="'Success'" class="alert alert-success">
+            <strong>Success!</strong> Petsitter was registered!
+        </div>
+    </div>
 </div>
 
 </body>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add pet</title>
+    <title>Pet information</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -13,9 +13,86 @@
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <img class="rounded-circle mt-5"
+                     width="150px"
+                     th:src="@{'pet/image/' + ${pet.getFileDb().getId()}}">
+                <!-- Button to Open the Modal -->
+
+                <!-- The Modal -->
+                <div class="modal" id="updateImage">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form th:action="@{'image/' + ${pet.getFileDb().getId()}}" method="post" action="#"
+                                  enctype="multipart/form-data">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Update user image</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+
+                                    <p>Please upload new image</p>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <label class="labels">Photo upload</label>
+                                            <input type="file" name="file"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Update</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" id="deletePet">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form th:action="@{'pet/remove?id=' + ${pet.getId()}}" method="post" action="#">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Pet remove</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete this pet?</p>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <span
+                        class="font-weight-bold" th:text="${pet.getPetName()}">Pet name</span><span
+                    class="text-black-50"
+                    th:text="${pet.getPetType().getName()}">Pet name</span><span>
+                </span>
+                <p></p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateImage">
+                    Change image
+                </button>
+                <p></p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deletePet">
+                    Delete pet
+                </button>
+            </div>
+
         </div>
         <div class=" col-md-5 border-right">
-            <form action="#" th:action="@{/pet/createPet}" th:object="${pet}" method="post" enctype="multipart/form-data">
+            <form action="#" th:action="@{/pet}" th:object="${pet}" method="post">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Add pet</h4>
@@ -24,6 +101,8 @@
                         <div class="col-md-6"><label class="labels">Name</label>
                             <input type="text" class="form-control" placeholder="pet name"
                                    th:field="*{petName}">
+                            <input type="hidden" class="form-control" placeholder="pet name"
+                                   th:field="*{id}">
                         </div>
                         <div class="col-md-6"><label class="labels">Age</label><input type="text"
                                                                                       class="form-control"
@@ -83,22 +162,11 @@
                                                                                                          placeholder="Description"
                                                                                                          th:field="*{description}"></textarea>
                         </div>
-                        <div class="col-md-12">
-                            <label class="labels">Photo upload</label>
-                            <input type="file" name="petImage"/>
+                        <div class="mt-5 text-center">
+                            <input class="btn btn-primary profile-button" type="submit" value="Update pet"/>
                         </div>
+
                     </div>
-                    <div class="mt-5 text-center">
-                        <input class="btn btn-primary profile-button" type="submit" value="Add pet"/>
-                    </div>
-                    <!--                    <div th:switch="${message}">-->
-                    <!--                        <div th:case="'Success'" class="alert alert-success">-->
-                    <!--                            <strong>Success!</strong> Operation performed successfully.-->
-                    <!--                        </div>-->
-                    <!--                        <div th:case="'Failed'" class="alert alert-danger">-->
-                    <!--                            <strong>Failure!</strong> Operation failed. Please try again-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
                 </div>
             </form>
         </div>

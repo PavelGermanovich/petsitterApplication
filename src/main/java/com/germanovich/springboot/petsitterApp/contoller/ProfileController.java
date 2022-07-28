@@ -1,6 +1,7 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
 import com.germanovich.springboot.petsitterApp.dao.*;
+import com.germanovich.springboot.petsitterApp.dto.PetsitterProfileDto;
 import com.germanovich.springboot.petsitterApp.entity.*;
 import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import com.germanovich.springboot.petsitterApp.service.FileStorageService;
@@ -9,7 +10,7 @@ import com.germanovich.springboot.petsitterApp.validation.EmailExistException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -56,33 +58,44 @@ public class ProfileController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PetSizeLimitRepository petSizeLimitRepository;
+
     @ModelAttribute(name = "cityList")
-    private List<City> getCityList() {
+    public List<City> getCityList() {
         return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
 
-    @ModelAttribute
-    @PreAuthorize("hasAnyAuthority('PET_OWNER')")
-    public void getOwnerCommonData(Model model, Principal principal) {
-        PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(principal.getName());
-        model.addAttribute("petowner", petOwner);
+    public List<PetSizeLimit> getPetSizeLimits() {
+        return StreamSupport.stream(petSizeLimitRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
-    @ModelAttribute
-    @PreAuthorize("hasAuthority('PET_SITTER')")
-    public void getSitterCommonData(Model model, Principal principal) {
+
+    private String getOwnerCommonData(Principal principal, Model model) {
+        PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(principal.getName());
+        model.addAttribute("petowner", petOwner);
+        return "petownerProfile";
+
+    }
+
+    private String getSitterCommonDataProfile(Principal principal, Model model) {
         PetSitter petSitter = petsitterRepository.findPetSitterByUserEmail(principal.getName());
-        model.addAttribute("petsitter", petSitter);
+        PetsitterProfileDto petsitterProfileDto = PetsitterProfileDto.convertPetsitterProfileDto(petSitter);
+        model.addAttribute("sizeLimits", getPetSizeLimits());
+        model.addAttribute("petsitterProfileDto", petsitterProfileDto);
+        return "petsitterProfile";
+
     }
 
     @GetMapping("/user")
-    public String petOwnerProfile(Principal principal) {
-        User user = userRepository.findByEmail(principal.getName());
-        if (user.getUserRole().getRoleId().equals(USER_ROLE.PET_SITTER)) {
-            return "petsitterProfile";
+    public String getUserData(Principal principal, Model model) {
+        if (((UsernamePasswordAuthenticationToken) principal).getAuthorities().stream()
+                .anyMatch(x -> x.getAuthority().equals(USER_ROLE.PET_SITTER.toString()))) {
+            return getSitterCommonDataProfile(principal, model);
         } else {
-            return "petownerProfile";
+            return getOwnerCommonData(principal, model);
         }
     }
 
@@ -168,5 +181,10 @@ public class ProfileController {
     public ModelAndView changePassword() {
         //toDo add change password here
         return new ModelAndView("petownerProfile");
+    }
+
+    @PostMapping(value = "/updatePetsitter")
+    public String updatePetsitter(PetsitterProfileDto petsitterProfileDto) {
+        return "petsitterProfile";
     }
 }

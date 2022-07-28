@@ -15,7 +15,7 @@
         <div class="col-md-3 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                 <img class="rounded-circle mt-5"
-                     th:with="imageURI=${petsitter.user.fileDb != null} ? ${petsitter.user.fileDb.id} : '-1'"
+                     th:with="imageURI=${petsitterProfileDto.getFileDbId() != 0} ? ${petsitterProfileDto.getFileDbId()} : '-1'"
                      width="150px"
                      th:src="@{'profile/image/' + ${imageURI}}">
                 <!-- Button to Open the Modal -->
@@ -98,9 +98,9 @@
                     </div>
                 </div>
                 <span
-                        class="font-weight-bold" th:text="${petsitter.getUser().nameFirst}">Edogaru</span><span
+                        class="font-weight-bold" th:text="${petsitterProfileDto.getNameFirst()}">Edogaru</span><span
                     class="text-black-50"
-                    th:text="${petsitter.getUser().email}">edogaru@mail.com.my</span><span>
+                    th:text="${petsitterProfileDto.getEmail()}">edogaru@mail.com.my</span><span>
                 </span>
                 <p></p>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateImage">
@@ -115,7 +115,7 @@
 
         </div>
         <div class=" col-md-5 border-right">
-            <form action="#" th:action="@{/updatepetsitter}" th:object="${petsitter}" method="post">
+            <form action="#" th:action="@{/updatePetsitter}" th:object="${petsitterProfileDto}" method="post">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Petsitter Settings</h4>
@@ -123,11 +123,11 @@
                     <div class="row mt-2">
                         <div class="col-md-6"><label class="labels">Name</label>
                             <input type="text" class="form-control" placeholder="first name"
-                                   th:field="*{user.nameFirst}">
+                                   th:field="*{nameFirst}">
                         </div>
                         <div class="col-md-6"><label class="labels">Surname</label><input type="text"
                                                                                           class="form-control"
-                                                                                          th:field="*{user.nameLast}"
+                                                                                          th:field="*{nameLast}"
                                                                                           placeholder="surname">
                         </div>
                     </div>
@@ -137,16 +137,16 @@
                             <input type="text"
                                    class="form-control"
                                    placeholder="enter phone number"
-                                   th:field="*{user.phone}">
+                                   th:field="*{phone}">
                         </div>
                         <div class="col-md-12">
 
                             <label class="control-label col-xs-2" for="dropOperator">City</label>
                             <div class="col-xs-10">
-                                <select class="form-control" th:field="*{user.city}" id="dropOperator">
+                                <select class="form-control" th:field="*{cityId}" id="dropOperator">
                                     <option th:each="city : ${cityList}" th:value="${city.getId()}"
                                             th:text="${city.getName()}"
-                                            th:selected="*{user.city.name}"
+                                            th:selected="*{cityId}"
                                     ></option>
                                 </select>
                             </div>
@@ -155,13 +155,60 @@
                         <div class="col-md-12"><label class="labels">Email</label><input type="text"
                                                                                          class="form-control"
                                                                                          placeholder="new email"
-                                                                                         th:field="*{user.email}"
+                                                                                         th:field="*{email}"
                                                                                          disabled>
                         </div>
                         <div class="col-md-12"><label class="labels">Birthdate</label><input type="date"
                                                                                              class="form-control"
                                                                                              placeholder="Birthdate"
-                                                                                             th:field="*{user.birthdate}">
+                                                                                             th:field="*{birthdate}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="control-label col-xs-2" for="dropOperator">Pet size which you are able to
+                                adopt</label>
+                            <select class="form-control" th:field="*{petSizeLimitId}">
+                                <option value="0" hidden="true">select pet size</option>
+                                <option th:each="petSize : ${sizeLimits}" th:value="${petSize.getId()}"
+                                        th:text="${petSize.getName()} + '(before ' + ${petSize.getSizeMax()} + ' kg)'"
+                                        th:selected="*{petSizeLimitId}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12" th:classappend="${#fields.hasErrors('description')} ? 'has-error'">
+                            <label class="labels">Description</label>
+                            <textarea type="text"
+                                      class="form-control"
+                                      placeholder="Pet sitter description"
+                                      th:field="*{description}" th:text="*{description}"></textarea>
+                            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+                                  class="help-block">birthdate error</span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="labels" for="dropOperator">Services:</label>
+                            <br/>
+                            <input type="checkbox" name="petsitCheckbox" id="petsitCheckbox" th:value="*{isPetsittingProvided}"
+                                   th:checked="*{isPetsittingProvided}"/>
+                            <label for="petsitCheckbox" data-value="walker"
+                                   class="form__label label--checkbox">Petsitting</label>
+                            <input type="checkbox" name="petwalkgingCheckbox" id="petwalkgingCheckbox"
+                                   th:checked="*{isDogWalkingProvided}"/>
+                            <label for="petwalkgingCheckbox" data-value="walker" class="form__label label--checkbox">Pet
+                                walking</label>
+                        </div>
+
+                        <div class="col-md-12" th:if="*{isPetsittingProvided}">
+                            <label class="labels">Petsitting cost per day (in BYN)</label>
+                            <input type="text" class="form-control"
+                                   placeholder="petsitting cost per day"
+                                   th:field="*{costInDayPetsitting}">
+                        </div>
+
+                        <div class="col-md-12" th:if="*{isDogWalkingProvided}">
+                            <label class="labels">Petsitting cost per hour (in BYN)</label>
+                            <input type="text" class="form-control"
+                                   placeholder="petsitting cost per day"
+                                   th:field="*{costInHourDogWalking}">
                         </div>
                     </div>
                 </div>
@@ -176,26 +223,16 @@
                         <strong>Failure!</strong> Operation failed. Please try again
                     </div>
                 </div>
-        </form>
-    </div>
-    <div class="col-md-4">
-        <div class="p-3 py-5">
-            <div class="d-flex justify-content-between align-items-center experience">
-                <span>My pets</span>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center experience">
+                    <span>My pets</span>
+                </div>
             </div>
-            <br>
-            <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
-                                                                                               class="form-control"
-                                                                                               placeholder="experience"
-                                                                                               value=""></div>
-            <br>
-            <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
-                                                                                          class="form-control"
-                                                                                          placeholder="additional details"
-                                                                                          value=""></div>
         </div>
     </div>
-</div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
