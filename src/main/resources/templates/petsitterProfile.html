@@ -121,6 +121,7 @@
                         <h4 class="text-right">Petsitter Settings</h4>
                     </div>
                     <div class="row mt-2">
+                        <input type="hidden" th:field="*{id}">
                         <div class="col-md-6"><label class="labels">Name</label>
                             <input type="text" class="form-control" placeholder="first name"
                                    th:field="*{nameFirst}">
@@ -187,29 +188,49 @@
                         <div class="col-md-12">
                             <label class="labels" for="dropOperator">Services:</label>
                             <br/>
-                            <input type="checkbox" name="petsitCheckbox" id="petsitCheckbox" th:value="*{isPetsittingProvided}"
-                                   th:checked="*{isPetsittingProvided}"/>
+                            <input type="checkbox" name="petsitCheckbox" id="petsitCheckbox"
+                                   th:field="*{petSittingProvided}"
+                                   th:checked="*{petSittingProvided}" onchange="valueChanged()"/>
                             <label for="petsitCheckbox" data-value="walker"
                                    class="form__label label--checkbox">Petsitting</label>
                             <input type="checkbox" name="petwalkgingCheckbox" id="petwalkgingCheckbox"
-                                   th:checked="*{isDogWalkingProvided}"/>
+                                   th:field="*{dogWalkingProvided}"
+                                   th:checked="*{dogWalkingProvided}" onchange="valueChanged()"/>
                             <label for="petwalkgingCheckbox" data-value="walker" class="form__label label--checkbox">Pet
                                 walking</label>
                         </div>
 
-                        <div class="col-md-12" th:if="*{isPetsittingProvided}">
+                        <div class="col-md-12" id="sitPetType">
+                            <label class="labels" for="dropOperator">What pets would you like to petsit:</label>
+                            <br/>
+                            <input type="checkbox" name="dogCheckbox" id="dogCheckbox"
+                                   th:field="*{dogPetsitted}"
+                                   th:checked="*{dogPetsitted}"/>
+                            <label for="petsitCheckbox" data-value="walker"
+                                   class="form__label label--checkbox">Dog</label>
+                            <input type="checkbox" name="catCheckbox" id="catCheckbox"
+                                   th:field="*{catPetsitted}"
+                                   th:checked="*{catPetsitted}"/>
+                            <label for="petwalkgingCheckbox" data-value="walker"
+                                   class="form__label label--checkbox">Cat</label>
+                        </div>
+
+
+                        <div class="col-md-12" id="petsittingDetails">
                             <label class="labels">Petsitting cost per day (in BYN)</label>
                             <input type="text" class="form-control"
                                    placeholder="petsitting cost per day"
                                    th:field="*{costInDayPetsitting}">
                         </div>
 
-                        <div class="col-md-12" th:if="*{isDogWalkingProvided}">
-                            <label class="labels">Petsitting cost per hour (in BYN)</label>
+                        <div class="col-md-12" id="dogWalkingDetails">
+                            <label class="labels">Dog walking cost per hour (in BYN)</label>
                             <input type="text" class="form-control"
-                                   placeholder="petsitting cost per day"
+                                   placeholder="dog walking cost per hour"
                                    th:field="*{costInHourDogWalking}">
                         </div>
+
+
                     </div>
                 </div>
                 <div class="mt-5 text-center">
@@ -237,5 +258,39 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    function valueChanged() {
+        if ($('#petsitCheckbox').is(":checked")) {
+            $("#petsittingDetails").show();
+            $("#sitPetType").show();
+        } else {
+            $("#petsittingDetails").hide();
+            $("#sitPetType").hide();
+        }
+
+        if ($('#petwalkgingCheckbox').is(":checked")) {
+            $("#dogWalkingDetails").show();
+        } else {
+            $("#dogWalkingDetails").hide();
+        }
+    }
+
+    $(function () {
+        const checkbox = document.querySelector("#petsitCheckbox"); //get checkbox
+        const divPetsittDet = document.querySelector("#petsittingDetails");
+        const divPetsittType = document.querySelector("#sitPetType");
+        if (!checkbox.checked) {  //if checkbox not checked
+            divPetsittDet.style.display = "none"; //hide div
+            divPetsittType.style.display = "none"; //hide div
+        }
+
+        const dogWalkingCheckbox = document.querySelector("#petwalkgingCheckbox"); //get checkbox
+        const divDogWalkingDetails = document.querySelector("#dogWalkingDetails");
+        if (!dogWalkingCheckbox.checked) {  //if checkbox not checked
+            divDogWalkingDetails.style.display = "none"; //hide div
+        }
+    })
+</script>
 </body>
 </html>

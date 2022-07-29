@@ -1,6 +1,5 @@
 package com.germanovich.springboot.petsitterApp.dto;
 
-import com.germanovich.springboot.petsitterApp.entity.City;
 import com.germanovich.springboot.petsitterApp.entity.PetSitter;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import lombok.Data;
@@ -22,17 +21,15 @@ public class PetsitterProfileDto {
     private String description;
     private int petSizeLimitId;
 
-    private boolean isPetsittingProvided;
-    private boolean isDogWalkingProvided;
+    private Boolean petSittingProvided;
+    private Boolean dogWalkingProvided;
 
+    private Boolean dogPetsitted;
+    private Boolean catPetsitted;
     private int costInHourDogWalking;
     private int costInDayPetsitting;
 
-    public static PetSitter convertPetsitterProfileDto(PetsitterProfileDto petsitterProfileDto) {
-        return null;
-    }
-
-    public static PetsitterProfileDto convertPetsitterProfileDto(PetSitter petSitter) {
+    public static PetsitterProfileDto convertPetsitterProfileDtoFromPetsitter(PetSitter petSitter) {
         PetsitterProfileDto petsitterProfileDto = new PetsitterProfileDto();
         petsitterProfileDto.setId(petSitter.getId());
         petsitterProfileDto.setNameFirst(petSitter.getUser().getNameFirst());
@@ -47,7 +44,7 @@ public class PetsitterProfileDto {
 
         if (petSitter.getServiceProvidedWithCost().stream()
                 .anyMatch(x -> x.getService().getServiceName().equals(PETSITTER_SERVICE.SITTING.getRoleName()))) {
-            petsitterProfileDto.setPetsittingProvided(true);
+            petsitterProfileDto.setPetSittingProvided(true);
             petsitterProfileDto.setCostInDayPetsitting(petSitter.getServiceProvidedWithCost().stream()
                     .filter(x -> x.getService().getServiceName().equals(PETSITTER_SERVICE.SITTING.getRoleName())).findFirst().get().getCostForServicePerUnit());
         }
