@@ -11,12 +11,12 @@ public class PetsitterServiceCost {
     @EmbeddedId
     private PetsitterServiceKey id = new PetsitterServiceKey();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @MapsId("petsitterFk")
     @JoinColumn(name = "petsitter_fk")
     private PetSitter petSitter;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @MapsId("serviceFk")
     @JoinColumn(name = "service_fk")
     private Service service;

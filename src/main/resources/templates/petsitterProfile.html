@@ -125,11 +125,15 @@
                         <div class="col-md-6"><label class="labels">Name</label>
                             <input type="text" class="form-control" placeholder="first name"
                                    th:field="*{nameFirst}">
+                            <span th:if="${#fields.hasErrors('nameFirst')}" th:errors="*{nameFirst}"
+                                  class="help-block">birthdate error</span>
                         </div>
                         <div class="col-md-6"><label class="labels">Surname</label><input type="text"
                                                                                           class="form-control"
                                                                                           th:field="*{nameLast}"
                                                                                           placeholder="surname">
+                            <span th:if="${#fields.hasErrors('nameLast')}" th:errors="*{nameLast}"
+                                  class="help-block">birthdate error</span>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -139,6 +143,8 @@
                                    class="form-control"
                                    placeholder="enter phone number"
                                    th:field="*{phone}">
+                            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+                                  class="help-block">birthdate error</span>
                         </div>
                         <div class="col-md-12">
 
@@ -147,9 +153,11 @@
                                 <select class="form-control" th:field="*{cityId}" id="dropOperator">
                                     <option th:each="city : ${cityList}" th:value="${city.getId()}"
                                             th:text="${city.getName()}"
-                                            th:selected="*{cityId}"
-                                    ></option>
+                                            th:selected="*{cityId}">
+                                    </option>
                                 </select>
+                                <span th:if="${#fields.hasErrors('cityId')}" th:errors="*{cityId}"
+                                      class="help-block">birthdate error</span>
                             </div>
                         </div>
 

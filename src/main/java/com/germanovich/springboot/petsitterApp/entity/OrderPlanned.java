@@ -1,8 +1,10 @@
 package com.germanovich.springboot.petsitterApp.entity;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity(name = "order_planned")
 @Data
@@ -22,6 +24,13 @@ public class OrderPlanned {
     @ManyToOne
     @JoinColumn(name = "petowner_fk")
     private PetOwner petOwner;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "start_time_planned")
+    private LocalDate startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "end_time_planned")
+    private LocalDate endDate;
 
     private int units;
 

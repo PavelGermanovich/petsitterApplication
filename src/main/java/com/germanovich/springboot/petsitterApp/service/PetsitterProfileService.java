@@ -4,7 +4,11 @@ import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterProfileDto;
 import com.germanovich.springboot.petsitterApp.entity.PetSitter;
 import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
+import com.germanovich.springboot.petsitterApp.entity.PetsittingDetails;
+import com.germanovich.springboot.petsitterApp.entity.key.PetsitterServiceKey;
+import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -35,10 +39,15 @@ public class PetsitterProfileService {
     @Autowired
     private PetSizeLimitRepository petSizeLimitRepository;
 
-    public void updatePetsitterProfile(PetsitterProfileDto petsitterProfileDto) {
+    @Autowired
+    private PetSitterServiceCostRepository petSitterServiceCostRepository;
 
-        convertPetsitterProfileDtoToPetsitter(petsitterProfileDto);
+    @Autowired
+    private ServiceRepository serviceRepository;
 
+    public PetSitter updatePetsitterProfile(PetsitterProfileDto petsitterProfileDto) {
+        PetSitter petSitter = convertPetsitterProfileDtoToPetsitter(petsitterProfileDto);
+        return petsitterRepository.save(petSitter);
     }
 
     public PetSitter convertPetsitterProfileDtoToPetsitter(PetsitterProfileDto petsitterProfileDto) {
@@ -52,10 +61,60 @@ public class PetsitterProfileService {
         oldPetsitter.setDescription(petsitterProfileDto.getDescription());
         oldPetsitter.setPetSizeLimtis(petSizeLimitRepository.findById(petsitterProfileDto.getPetSizeLimitId()).get());
 
-        if (petsitterProfileDto.getPetSittingProvided()) {
-            //todo add logic here
+        boolean wasPetsittingProvided = oldPetsitter.getServiceProvidedWithCost().stream()
+                .anyMatch(x -> x.getService().getServiceName().equals(PETSITTER_SERVICE.SITTING.getRoleName()));
+        PetsitterServiceKey petsitterServiceKey = new PetsitterServiceKey();
+        petsitterServiceKey.setPetsitterFk(oldPetsitter.getId());
+        petsitterServiceKey.setServiceFk(serviceRepository
+                .findServiceByServiceName(PETSITTER_SERVICE.SITTING.getRoleName()).getId());
+
+        if (wasPetsittingProvided != petsitterProfileDto.getPetSittingProvided()) {
+            if (petsitterProfileDto.getPetSittingProvided()) {
+                PetsitterServiceCost petsitterServiceCost = new PetsitterServiceCost();
+                petsitterServiceCost.setService(serviceRepository
+                        .findServiceByServiceName(PETSITTER_SERVICE.SITTING.getRoleName()));
+                petsitterServiceCost.setPetSitter(oldPetsitter);
+                petsitterServiceCost.setCostForServicePerUnit(petsitterProfileDto.getCostInDayPetsitting());
+                oldPetsitter.getServiceProvidedWithCost().add(petsitterServiceCost);
+            } else {
+                oldPetsitter.getServiceProvidedWithCost()
+                        .remove(petSitterServiceCostRepository.findById(petsitterServiceKey).get());
+            }
+        } else if (petsitterProfileDto.getPetSittingProvided()) {
+            oldPetsitter.getServiceProvidedWithCost().stream().filter(x -> x.getId().equals(petsitterServiceKey))
+                    .findFirst().get().setCostForServicePerUnit(petsitterProfileDto.getCostInDayPetsitting());
         }
 
-        return null;
+        boolean wasWalkingProvided = oldPetsitter.getServiceProvidedWithCost().stream()
+                .anyMatch(x -> x.getService().getServiceName().equals(PETSITTER_SERVICE.WALKING.getRoleName()));
+        PetsitterServiceKey petsitterServiceKeyWalking = new PetsitterServiceKey();
+        petsitterServiceKeyWalking.setPetsitterFk(oldPetsitter.getId());
+        petsitterServiceKeyWalking.setServiceFk(serviceRepository
+                .findServiceByServiceName(PETSITTER_SERVICE.WALKING.getRoleName()).getId());
+
+
+        if (wasWalkingProvided != petsitterProfileDto.getDogWalkingProvided()) {
+            if (petsitterProfileDto.getDogWalkingProvided()) {
+                PetsitterServiceCost petsitterServiceCost = new PetsitterServiceCost();
+                petsitterServiceCost.setService(serviceRepository
+                        .findServiceByServiceName(PETSITTER_SERVICE.WALKING.getRoleName()));
+                petsitterServiceCost.setPetSitter(oldPetsitter);
+                petsitterServiceCost.setCostForServicePerUnit(petsitterProfileDto.getCostInHourDogWalking());
+                oldPetsitter.getServiceProvidedWithCost().add(petsitterServiceCost);
+            } else {
+                oldPetsitter.getServiceProvidedWithCost()
+                        .remove(petSitterServiceCostRepository.findById(petsitterServiceKeyWalking).get());
+            }
+        } else if (petsitterProfileDto.getDogWalkingProvided()) {
+            oldPetsitter.getServiceProvidedWithCost().stream().filter(x -> x.getId().equals(petsitterServiceKeyWalking))
+                    .findFirst().get().setCostForServicePerUnit(petsitterProfileDto.getCostInHourDogWalking());
+        }
+
+        PetsittingDetails petsittingDetails = new PetsittingDetails();
+        petsittingDetails.setIsCatWanted(petsitterProfileDto.getCatPetsitted());
+        petsittingDetails.setIsDogWanted(petsitterProfileDto.getDogPetsitted());
+        petsittingDetails.setPetSitter(oldPetsitter);
+        oldPetsitter.setPetsittingDetails(petsittingDetails);
+        return oldPetsitter;
     }
 }

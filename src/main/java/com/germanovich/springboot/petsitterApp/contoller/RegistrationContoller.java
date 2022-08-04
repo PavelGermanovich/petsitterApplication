@@ -60,10 +60,12 @@ public class RegistrationContoller {
         return new ModelAndView("registrationTypeSelect", "user", new User());
     }
 
+    @Validated(OnCreate.class)
     @PostMapping(value = "/petsitter/register")
     public ModelAndView registerPetsitter(@Valid PetSitter petSitter,
                                           @ModelAttribute("petwalkgingCheckbox") String petwalkgingCheckbox,
-                                          @ModelAttribute("petsitCheckbox") String petsitCheckbox, final BindingResult bindingResult,
+                                          @ModelAttribute("petsitCheckbox") String petsitCheckbox,
+                                          final BindingResult bindingResult,
                                           @RequestParam("file") MultipartFile multipartFile, Model model) {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("registerPetsitter", "petSitter", petSitter);

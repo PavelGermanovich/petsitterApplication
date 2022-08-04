@@ -186,8 +186,13 @@ public class ProfileController {
     }
 
     @PostMapping(value = "/updatePetsitter")
-    public String updatePetsitter(PetsitterProfileDto petsitterProfileDto) {
-        petsitterProfileService.updatePetsitterProfile(petsitterProfileDto);
-        return "petsitterProfile";
+    public ModelAndView updatePetsitter(@Valid PetsitterProfileDto petsitterProfileDto, BindingResult bindingResult,
+                                        Model model) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("petsitterProfile", "petsitterProfileDto", petsitterProfileDto);
+        }
+        PetSitter petSitter = petsitterProfileService.updatePetsitterProfile(petsitterProfileDto);
+
+        return new ModelAndView("redirect:/user");
     }
 }
