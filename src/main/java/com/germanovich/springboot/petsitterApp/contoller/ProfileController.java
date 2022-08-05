@@ -1,6 +1,8 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
 import com.germanovich.springboot.petsitterApp.dao.*;
+import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
+import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterProfileDto;
 import com.germanovich.springboot.petsitterApp.entity.*;
 import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
@@ -194,5 +196,15 @@ public class ProfileController {
         PetSitter petSitter = petsitterProfileService.updatePetsitterProfile(petsitterProfileDto);
 
         return new ModelAndView("redirect:/user");
+    }
+
+    @GetMapping(value = "/profile/petsitterInfo/{id}")
+    public String showPetsitterInfo(@PathVariable("id") int petsitterId, BasicPetsitterSearchDto basicPetsitterSearchDto, Model model) {
+        PetSitter petsitterForBooking = petsitterRepository.findById(petsitterId).get();
+
+        model.addAttribute("petsitterSearchDto", basicPetsitterSearchDto);
+        model.addAttribute("petsitter", petsitterForBooking);
+        model.addAttribute("petsitterOrder", new PetsitterOrderDto());
+        return "petsitterBookingInfo";
     }
 }

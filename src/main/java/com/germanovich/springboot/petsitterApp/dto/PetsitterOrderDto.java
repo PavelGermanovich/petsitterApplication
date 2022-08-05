@@ -1,21 +1,23 @@
 package com.germanovich.springboot.petsitterApp.dto;
 
-import com.germanovich.springboot.petsitterApp.entity.City;
-import com.germanovich.springboot.petsitterApp.entity.PetType;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Data
-public class BasicPetsitterSearchDto {
-    private PetType petType;
-    private int petSize;
-    private PETSITTER_SERVICE petsitterService;
+@AllArgsConstructor
+@NoArgsConstructor
+public class PetsitterOrderDto {
+    private int petsitterId;
+    private int petownerId;
+    private PETSITTER_SERVICE service;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    private City city;
+
 }

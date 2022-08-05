@@ -28,16 +28,30 @@
             </div>
             <div th:each="petsitter : ${petsittersList}">
                 <figure class="figure">
-                    <img th:with="imageURI=${petsitter.user.fileDb != null} ? ${petsitter.user.fileDb.id} : '-1'"
+                    <img th:with="imageURI=${petsitter.getFileDbId() != null} ? ${petsitter.getFileDbId()} : '-1'"
                          th:src="@{'profile/image/' + ${imageURI}}" class="figure-img img-fluid rounded"
                          alt="A generic square placeholder image with rounded corners in a figure.">
                     <figcaption class="figure-caption"
-                                th:text="${petsitter.getUser().getNameFirst()} + ': ' + ${petsitter.getUser().getCity().getName()}">
+                                th:text="${petsitter.getPetsitterName()} + ': ' + ${petsitter.getCity()} + ' , cost for service ' + ${petsitter.getCostForServicePerUnit()}">
                         A caption for the above image.
                     </figcaption>
-                    <a th:href="@{'petsitter?id=' + ${petsitter.getId()}}" class="btn btn-secondary">
-                        Pet details
+                    <form method="GET" th:action="@{'/profile/petsitterInfo/' + ${petsitter.petsitterId}}" th:object="${petsitterSearchDto}">
+                        <input type="hidden" th:field="*{petType}">
+                        <input type="hidden" th:field="*{petSize}">
+                        <input type="hidden" th:field="*{petsitterService}">
+                        <input type="hidden" th:field="*{startDate}">
+                        <input type="hidden" th:field="*{endDate}">
+                        <input type="hidden" th:field="*{city}">
+                        <button type="submit" value="value" class="btn btn-secondary">This is a link that sends a POST request</button>
+                    </form>
+
+                    <a th:href="@{'petsitter?id=' + ${petsitter.petsitterId}}" class="btn btn-secondary">
+                        Petsitter details
                     </a>
+                    <!--ToDo --> add static button to book selected period from search form
+<!--                    <a th:href="@{'petsitter?id=' + ${petsitter.petsitterId}}" class="btn btn-secondary">-->
+<!--                        Book petsitter-->
+<!--                    </a>-->
                 </figure>
             </div>
         </div>

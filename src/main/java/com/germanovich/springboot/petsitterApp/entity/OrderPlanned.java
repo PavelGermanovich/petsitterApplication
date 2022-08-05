@@ -34,6 +34,11 @@ public class OrderPlanned {
 
     private int units;
 
-    @Column(columnDefinition = "LONGTEXT", name = "notes")
-    private String notes;
+
+
+    /**
+     * toDo add NF to add details to a booking order
+     */
+//    @Column(columnDefinition = "LONGTEXT", name = "notes")
+//    private String notes;
 }
