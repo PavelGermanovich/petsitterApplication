@@ -4,21 +4,13 @@ import com.germanovich.springboot.petsitterApp.dao.PetSitterServiceCostRepositor
 import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterSearchResultDto;
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
-import com.germanovich.springboot.petsitterApp.entity.PetType;
-import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
-import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
-import com.germanovich.springboot.petsitterApp.enums.PetTypeEnum;
 import com.germanovich.springboot.petsitterApp.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Controller
 public class PetsitterSearchController {

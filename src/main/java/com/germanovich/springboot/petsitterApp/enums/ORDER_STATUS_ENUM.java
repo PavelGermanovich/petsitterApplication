@@ -1,12 +1,14 @@
 package com.germanovich.springboot.petsitterApp.enums;
 
-public enum PetTypeEnum {
-    DOG("Dog"),
-    CAT("Cat");
+public enum ORDER_STATUS_ENUM {
+    DRAFT("Draft"),
+    SUBMITTED("Submitted"),
+    APPROVED("Approved"),
+    DECLINED("Declined");
 
     private String name;
 
-    PetTypeEnum(String name) {
+    ORDER_STATUS_ENUM(String name) {
         this.name = name;
     }
 

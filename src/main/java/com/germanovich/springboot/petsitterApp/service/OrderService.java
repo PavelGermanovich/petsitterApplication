@@ -1,46 +1,54 @@
 package com.germanovich.springboot.petsitterApp.service;
 
-import com.germanovich.springboot.petsitterApp.dao.OrderPlannedRepository;
-import com.germanovich.springboot.petsitterApp.dao.PetOwnerRepository;
-import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
-import com.germanovich.springboot.petsitterApp.dao.ServiceRepository;
+import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.entity.OrderPlanned;
-import com.germanovich.springboot.petsitterApp.entity.PetOwner;
+import com.germanovich.springboot.petsitterApp.entity.PetSitter;
+import com.germanovich.springboot.petsitterApp.enums.ORDER_STATUS_ENUM;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static java.time.temporal.ChronoUnit.DAYS;
+
 
 @Service
 public class OrderService {
     @Autowired
     private PetsitterRepository petsitterRepository;
-
     @Autowired
     private ServiceRepository serviceRepository;
-
     @Autowired
     private PetOwnerRepository petOwnerRepository;
-
+    @Autowired
+    private OrderStatusRepository orderStatusRepository;
     @Autowired
     private OrderPlannedRepository orderPlannedRepository;
 
-    public void createPlannedOrder(PetsitterOrderDto petsitterOrderDto) {
+    public OrderPlanned createPlannedOrder(PetsitterOrderDto petsitterOrderDto) {
         OrderPlanned orderPlanned = convertPetsitterOrderDtoToOrderPlanned(petsitterOrderDto);
+        //ToDo Add validation for incoming order, dates check, service provided check etc.
 
-
-        return;
+        return  orderPlannedRepository.save(orderPlanned);
     }
 
     public OrderPlanned convertPetsitterOrderDtoToOrderPlanned(PetsitterOrderDto petsitterOrderDto) {
+        PetSitter petsitter = petsitterRepository.findById(petsitterOrderDto.getPetsitterId()).get();
+
         OrderPlanned orderPlanned = new OrderPlanned();
-        orderPlanned.setPetSitter(petsitterRepository.findById(petsitterOrderDto.getPetsitterId()).get());
+        orderPlanned.setPetSitter(petsitter);
         orderPlanned.setService(serviceRepository.findServiceByServiceName(petsitterOrderDto.getService().getRoleName()));
         orderPlanned.setPetOwner(petOwnerRepository.findById(petsitterOrderDto.getPetownerId()).get());
         orderPlanned.setStartDate(petsitterOrderDto.getStartDate());
         orderPlanned.setEndDate(petsitterOrderDto.getEndDate());
+        orderPlanned.setOrderStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.SUBMITTED.getName()));
 
-        //calculate units of work
+        int daysToPetsit = (int) DAYS.between(petsitterOrderDto.getStartDate(), petsitterOrderDto.getEndDate());
+        orderPlanned.setUnits(daysToPetsit);
+        orderPlanned.setPlannedPrice(daysToPetsit *
+                petsitter.getServiceProvidedWithCost().stream()
+                        .filter(x -> x.getService().getServiceName().equals(petsitterOrderDto.getService()
+                                .getRoleName())).findFirst().get().getCostForServicePerUnit());
         return orderPlanned;
     }
 }

@@ -5,8 +5,6 @@ import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterSearchResultDto;
 import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
-import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
-import com.germanovich.springboot.petsitterApp.enums.PetTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +53,7 @@ public class SearchService {
         petsitterSearchResultDto.setCostForServicePerUnit(petsitterServiceCost.getCostForServicePerUnit());
         petsitterSearchResultDto.setCity(petsitterServiceCost.getPetSitter().getUser().getCity().getName());
         petsitterSearchResultDto.setFileDbId(petsitterServiceCost.getPetSitter().getUser().getFileDb().getId());
+
 
         return petsitterSearchResultDto;
     }

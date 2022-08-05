@@ -1,6 +1,7 @@
 package com.germanovich.springboot.petsitterApp.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -9,13 +10,20 @@ import java.time.LocalDate;
 @Entity(name = "order_planned")
 @Data
 public class OrderPlanned {
+
     @Id
     @Column(name = "order_pk")
+    @GenericGenerator(name = "auto", strategy = "increment")
+    @GeneratedValue(generator = "auto")
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "service_fk")
     private Service service;
+
+    @ManyToOne
+    @JoinColumn(name = "status_fk")
+    private OrderStatus orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "petsitter_fk")
@@ -34,6 +42,8 @@ public class OrderPlanned {
 
     private int units;
 
+    @Column(name = "planned_price")
+    private int plannedPrice;
 
 
     /**
