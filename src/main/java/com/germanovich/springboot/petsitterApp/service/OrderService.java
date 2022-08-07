@@ -3,11 +3,15 @@ package com.germanovich.springboot.petsitterApp.service;
 import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.entity.OrderPlanned;
+import com.germanovich.springboot.petsitterApp.entity.PetOwner;
 import com.germanovich.springboot.petsitterApp.entity.PetSitter;
 import com.germanovich.springboot.petsitterApp.enums.ORDER_STATUS_ENUM;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -25,7 +29,9 @@ public class OrderService {
     @Autowired
     private OrderPlannedRepository orderPlannedRepository;
 
-    public OrderPlanned createPlannedOrder(PetsitterOrderDto petsitterOrderDto) {
+    public OrderPlanned createPlannedOrder(PetsitterOrderDto petsitterOrderDto, Principal principal) {
+        petsitterOrderDto.setPetownerId(petOwnerRepository.findPetOwnerByUserEmail(principal.getName()).getId());
+
         OrderPlanned orderPlanned = convertPetsitterOrderDtoToOrderPlanned(petsitterOrderDto);
         //ToDo Add validation for incoming order, dates check, service provided check etc.
 
@@ -50,5 +56,9 @@ public class OrderService {
                         .filter(x -> x.getService().getServiceName().equals(petsitterOrderDto.getService()
                                 .getRoleName())).findFirst().get().getCostForServicePerUnit());
         return orderPlanned;
+    }
+
+    public List<OrderPlanned> getPlannedOrders(Principal principal) {
+        return orderPlannedRepository.findUsersSubmittedOrders(principal.getName());
     }
 }

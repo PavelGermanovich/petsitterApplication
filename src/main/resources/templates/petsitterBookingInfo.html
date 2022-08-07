@@ -25,7 +25,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <form action="#" th:action="@{/bookPetsitter}" th:object="${petsitterOrder}" method="post">
-<!--                                <input type="hidden" th:field="*{petsitterId}" th:value="${petsitter.getId()}">-->
+                                <!--                                <input type="hidden" th:field="*{petsitterId}" th:value="${petsitter.getId()}">-->
 
                                 <!-- Modal Header -->
                                 <div class="modal-header">
@@ -37,12 +37,18 @@
 
                                     <p>Are you sure you want to submit booking for this petsitter with the following
                                         information ?</p>
-                                    <input type="hidden" th:attr="name='petsitterId'" th:value="${petsitter.id}" />
+                                    <input type="hidden" th:attr="name='petsitterId'" th:value="${petsitter.id}"/>
+                                    <input type="hidden" th:attr="name='service'"
+                                           th:value="${petsitterSearchDto.petsitterService}"/>
+                                    <input type="hidden" th:attr="name='startDate'"
+                                           th:value="${petsitterSearchDto.startDate}"/>
+                                    <input type="hidden" th:attr="name='endDate'"
+                                           th:value="${petsitterSearchDto.endDate}"/>
 
-                                    <!--                                    toDo add service cost heere!!-->
-                                    <!--                                    <label class="labels"-->
-                                    <!--                                           th:text="${petsitter.getUser().getCity().getName()} + ', ' + ${petsitterSearchDto.getPetType().getName()} + ', ' + ${petsitterSearchDto.getPetsitterService().getRoleName()}">order-->
-                                    <!--                                        info</label>-->
+<!--                                    toDo add service cost heere!!-->
+                                    <label class="labels"
+                                           th:text="${petsitter.getUser().getCity().getName()} + ', ' + ${petsitterSearchDto.getPetType().getName()} + ', ' + ${petsitterSearchDto.getPetsitterService().getRoleName()}">order
+                                        info</label>
 
                                 </div>
                                 <!-- Modal footer -->
@@ -110,7 +116,7 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBooking">
                     Create booking
                 </button>
-                <div th:switch="${message}">
+                <div th:switch="${messagePetCreated}">
                     <div th:case="'Success'" class="alert alert-success">
                         <strong>Success!</strong> Booking performed successfully.
                     </div>
@@ -119,15 +125,15 @@
                     </div>
                 </div>
             </div>
-    </div>
-    <div class="col-md-4">
-        <div class="p-3 py-5">
-            <div class="d-flex justify-content-between align-items-center experience">
-                <span>My pets</span>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center experience">
+                    <span>My pets</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

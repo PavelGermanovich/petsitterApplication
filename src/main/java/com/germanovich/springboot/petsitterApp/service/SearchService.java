@@ -5,6 +5,8 @@ import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterSearchResultDto;
 import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
+import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
+import com.germanovich.springboot.petsitterApp.enums.PET_TYPE_Enum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,22 +25,22 @@ public class SearchService {
         List<PetsitterServiceCost> petsittersWithCost = petSitterServiceCostRepository
                 .findPetsitterByServiceName(basicPetsitterSearchDto.getPetsitterService().getRoleName());
 
-//        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getUser().getCity().getId() == (basicPetsitterSearchDto.getCity().getId())).
-//                filter(x -> x.getPetSitter().getPetSizeLimtis().getSizeMax() >= basicPetsitterSearchDto.getPetSize())
-//                .collect(Collectors.toList());
+        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getUser().getCity().getId() == (basicPetsitterSearchDto.getCity().getId())).
+                filter(x -> x.getPetSitter().getPetSizeLimtis().getSizeMax() >= basicPetsitterSearchDto.getPetSize())
+                .collect(Collectors.toList());
 
-        //toDo скорее всего тут даты не включительно проверяются, нужно будет проверить, пока что у меня нет заказов
-//        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
-//                .noneMatch(order -> order.getStartDate().isBefore(basicPetsitterSearchDto.getEndDate()) &&
-//                        order.getEndDate().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
+//        toDo скорее всего тут даты не включительно проверяются, нужно будет проверить, пока что у меня нет заказов
+        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
+                .noneMatch(order -> order.getStartDate().isBefore(basicPetsitterSearchDto.getEndDate()) &&
+                        order.getEndDate().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
 
-//        if (basicPetsitterSearchDto.getPetsitterService().getRoleName().equals(PETSITTER_SERVICE.SITTING.getRoleName())) {
-//            if (basicPetsitterSearchDto.getPetType().getName().equals(PetTypeEnum.CAT.getName())) {
-//                petsittersWithCost = petsittersWithCost.stream().filter(pS -> pS.getPetSitter().getPetsittingDetails().getIsCatWanted()).collect(Collectors.toList());
-//            } else {
-//                petsittersWithCost = petsittersWithCost.stream().filter(pS -> pS.getPetSitter().getPetsittingDetails().getIsDogWanted()).collect(Collectors.toList());
-//            }
-//        }
+        if (basicPetsitterSearchDto.getPetsitterService().getRoleName().equals(PETSITTER_SERVICE.SITTING.getRoleName())) {
+            if (basicPetsitterSearchDto.getPetType().getName().equals(PET_TYPE_Enum.CAT.getName())) {
+                petsittersWithCost = petsittersWithCost.stream().filter(pS -> pS.getPetSitter().getPetsittingDetails().getIsCatWanted()).collect(Collectors.toList());
+            } else {
+                petsittersWithCost = petsittersWithCost.stream().filter(pS -> pS.getPetSitter().getPetsittingDetails().getIsDogWanted()).collect(Collectors.toList());
+            }
+        }
 
         List<PetsitterSearchResultDto> petsitterSearchResultList = petsittersWithCost.stream()
                 .map(SearchService::convertPetsitterWithServiceCostToPetsitterSearchRst).collect(Collectors.toList());

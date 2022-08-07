@@ -9,11 +9,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="author" content="colorlib.com">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900|Poppins:700" rel="stylesheet"/>
-    <link href="/css/main.css" rel="stylesheet"/>
+    <link href="/static/css/main.css" th:href="@{/css/main.css}" rel="stylesheet"/>
+
 </head>
 <body>
 <div class="s011">
-    <form id="petsitSearchForm" th:action="@{/searchPetsitter}" th:object="${searchPetsitter}" action="#" method="post">
+    <form id="petsitSearchForm" th:action="@{/searchPetsitter}" th:object="${searchPetsitter}" action="#" method="get">
         <fieldset>
             <legend>Search Service</legend>
         </fieldset>
@@ -161,7 +162,7 @@
                         </div>
                         <div class="input-field">
                             <label>START DATE</label>
-                            <input class="datepicker" type="text" placeholder="mm/dd/yy"/>
+                            <input class="datepicker" type="date" th:field="*{startDate}" placeholder="mm/dd/yy"/>
                         </div>
                     </div>
                     <div class="input-wrap">
@@ -172,7 +173,7 @@
                         </div>
                         <div class="input-field">
                             <label>END DATE</label>
-                            <input class="datepicker" type="text" placeholder="mm/dd/yy"/>
+                            <input class="datepicker" type="date" th:field="*{endDate}" placeholder="mm/dd/yy"/>
                         </div>
                     </div>
                     <div class="input-wrap">
@@ -193,20 +194,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row third">
-                    <div class="input-checkbox-group">
-                        <div class="input-checkbox">
-                            <input id="yes" type="checkbox" name="customer" value="yes" checked="checked"/>
-                            <label for="yes">ADD A FLIGHT</label>
-                        </div>
-                        <div class="input-checkbox">
-                            <input id="no" type="checkbox" name="customer" value="no"/>
-                            <label for="no">ADD A CAR</label>
-                        </div>
-                    </div>
-                </div>
                 <div class="row last">
-                    <button class="btn-search" type="button">Search</button>
+                    <button class="btn-search" type="submit">Search</button>
                 </div>
             </div>
         </div>
@@ -220,13 +209,14 @@
             searchEnabled: false,
             itemSelectText: '',
         });
-
 </script>
 <script src="/js/extention/flatpickr.js"></script>
 <script>
     flatpickr(".datepicker",
         {
-            dateFormat: "m/d/y"
+            // dateFormat: "m/d/y"
+            dateFormat: "Y-m-d"
+
         });
     var btnTypes = document.querySelectorAll('.travel-type-wrap .item')
     var mainForm = document.getElementById('main-form')
@@ -242,5 +232,5 @@
     }
 
 </script>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</body>
 </html>

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -45,20 +46,22 @@ public class PetController {
 
     @PostMapping("/createPet")
     public String createPet(@Valid Pet pet, Principal principal, Model model,
-                            @RequestParam("petImage") MultipartFile multipartFile) {
+                            @RequestParam("petImage") MultipartFile multipartFile, RedirectAttributes redirectAttrs) {
         PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(principal.getName());
         try {
             //toDo add check if file null
             pet.setFileDb(fileStorageService.store(multipartFile));
+            pet.setPetOwner(petOwner);
+            petOwner.getPetList().add(pet);
+            petRepository.save(pet);
         } catch (Exception e) {
             //ToDo add exceptions here
+            redirectAttrs.addFlashAttribute("messagePetCreated", "Failed");
+            return "redirect:/user";
         }
         //ToDo add validation
-        pet.setPetOwner(petOwner);
-        petOwner.getPetList().add(pet);
-        petRepository.save(pet);
-        model.addAttribute("messagePetCreated", "Success");
-        model.addAttribute("petowner", petOwner);
+
+        redirectAttrs.addFlashAttribute("messagePetCreated", "Success");
         return "redirect:/user";
     }
 

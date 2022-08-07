@@ -4,6 +4,7 @@ import com.germanovich.springboot.petsitterApp.dao.PetSitterServiceCostRepositor
 import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterSearchResultDto;
+import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import com.germanovich.springboot.petsitterApp.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,8 @@ public class PetsitterSearchController {
 
     @GetMapping("/searchPetsitter")
     public String searchPetsitter(BasicPetsitterSearchDto basicPetsitterSearchDto, Model model) {
+        basicPetsitterSearchDto.setPetsitterService(PETSITTER_SERVICE.SITTING);
+
         List<PetsitterSearchResultDto> petsitterSearchResultList = searchService.getPetsittersBasedOnSearch(basicPetsitterSearchDto);
         //toDo add validation to the search, add specifications for different search options
 
