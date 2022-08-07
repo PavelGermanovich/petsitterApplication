@@ -46,4 +46,25 @@ public class OrderController {
         model.addAttribute("draftBookings", draftOrders);
         return "draftBookings";
     }
+
+    @PostMapping(value = "/cancelOrder")
+    public String cancelOrder(Model model, Principal principal, OrderPlanned orderPlanned, RedirectAttributes redirectAttributes) {
+        boolean isOrderCancelled = orderService.cancelOrder(orderPlanned.getId(), principal.getName());
+        redirectAttributes.addFlashAttribute("message", "submittedRemovedSuccess");
+        return "redirect:/bookings";
+    }
+
+    @PostMapping(value = "/approveOrder")
+    public String approveOrder(Model model, Principal principal, OrderPlanned orderPlanned, RedirectAttributes redirectAttributes) {
+        try {
+            boolean isOrderApproved = orderService.approveOrder(orderPlanned.getId(), principal.getName());
+            if (!isOrderApproved) {
+                redirectAttributes.addFlashAttribute("message", "submittedApproveFailed");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "submittedApproveFailed");
+        }
+        redirectAttributes.addFlashAttribute("message", "submittedApproveSuccess");
+        return "redirect:/bookings";
+    }
 }

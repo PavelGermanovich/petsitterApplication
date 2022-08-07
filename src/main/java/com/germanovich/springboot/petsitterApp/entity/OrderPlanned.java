@@ -45,6 +45,9 @@ public class OrderPlanned {
     @Column(name = "planned_price")
     private int plannedPrice;
 
+    @ManyToOne()
+    @JoinColumn(name = "pet_type_fk")
+    private PetType petType;
 
     /**
      * toDo add NF to add details to a booking order
