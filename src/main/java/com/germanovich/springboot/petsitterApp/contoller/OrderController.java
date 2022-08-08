@@ -6,10 +6,8 @@ import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.entity.OrderApproved;
 import com.germanovich.springboot.petsitterApp.entity.OrderSubmitted;
-import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import com.germanovich.springboot.petsitterApp.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +56,7 @@ public class OrderController {
         model.addAttribute("approvedOrders", approvedOrders);
         model.addAttribute("historyOrders", othersOrders);
 
-        return "draftBookings";
+        return "bookings";
     }
 
     @PostMapping(value = "/declineOrder")

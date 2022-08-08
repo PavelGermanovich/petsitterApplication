@@ -53,7 +53,7 @@ public class InitialContoller {
         model.addAttribute("sizeLimits", getPetSizeLimits());
         model.addAttribute("cityList", getCityList());
         model.addAttribute("searchPetsitter", new BasicPetsitterSearchDto());
-        return "indexNEWW";
+        return "home";
     }
 
 }
