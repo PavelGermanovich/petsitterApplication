@@ -33,5 +33,5 @@ public class Service {
     @OneToMany(mappedBy = "service")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<OrderPlanned> plannedService;
+    private Set<OrderSubmitted> plannedService;
 }

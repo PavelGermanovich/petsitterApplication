@@ -31,7 +31,7 @@ public class PetSitter {
     @OneToMany(mappedBy = "petSitter", cascade=CascadeType.ALL, orphanRemoval=true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<OrderPlanned> plannedOrders;
+    private Set<OrderSubmitted> plannedOrders;
 
     @ManyToOne
     @JoinColumn(name = "pet_size_limit_fk")

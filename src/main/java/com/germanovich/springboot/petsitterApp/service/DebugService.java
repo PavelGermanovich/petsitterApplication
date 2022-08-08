@@ -25,7 +25,7 @@ public class DebugService {
     @Autowired
     private PetSitterServiceCostRepository petSitterServiceCostRepository;
     @Autowired
-    private OrderPlannedRepository orderPlannedRepository;
+    private OrderSubmittedRepository orderSubmittedRepository;
 
     public void checkSomeStuff() {
         System.out.println("hello here");

@@ -28,7 +28,7 @@ public class PetOwner {
     @OneToMany(mappedBy = "petOwner")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<OrderPlanned> plannedOrders;
+    private Set<OrderSubmitted> plannedOrders;
 
     @Column(name = "owner_description")
     @NotEmpty(message = "description is required")

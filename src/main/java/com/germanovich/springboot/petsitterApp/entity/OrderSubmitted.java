@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Entity(name = "order_planned")
 @Data
-public class OrderPlanned {
+public class OrderSubmitted {
 
     @Id
     @Column(name = "order_pk")

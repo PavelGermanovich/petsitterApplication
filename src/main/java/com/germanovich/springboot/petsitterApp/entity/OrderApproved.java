@@ -9,8 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "order_sent")
+@Entity(name = "order_sent")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,11 +21,11 @@ public class OrderApproved {
 
     @ManyToOne()
     @JoinColumn(name = "petsitter_fk")
-    private PetSitter petsitterFk;
+    private PetSitter petsitter;
 
     @ManyToOne()
     @JoinColumn(name = "petowner_fk")
-    private PetOwner petownerFk;
+    private PetOwner petowner;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "start_time")
@@ -52,9 +51,9 @@ public class OrderApproved {
 
     @ManyToOne()
     @JoinColumn(name = "status_fk")
-    private OrderStatus statusFk;
+    private OrderStatus status;
 
     @ManyToOne()
     @JoinColumn(name = "service_fk")
-    private Service serviceFk;
+    private Service service;
 }

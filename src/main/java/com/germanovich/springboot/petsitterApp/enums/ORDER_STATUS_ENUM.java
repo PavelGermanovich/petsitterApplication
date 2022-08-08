@@ -4,7 +4,8 @@ public enum ORDER_STATUS_ENUM {
     DRAFT("Draft"),
     SUBMITTED("Submitted"),
     APPROVED("Approved"),
-    DECLINED("Declined");
+    DECLINED("Declined"),
+    DONE("Done");
 
     private String name;
 
