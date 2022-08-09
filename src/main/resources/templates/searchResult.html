@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <div th:replace="/fragments/header :: header-css"/>
     <title>Search</title>
@@ -44,12 +44,8 @@
                         <input type="hidden" th:field="*{startDate}">
                         <input type="hidden" th:field="*{endDate}">
                         <input type="hidden" th:field="*{city}">
-                        <button type="submit" value="value" class="btn btn-secondary">This is a link that sends a POST request</button>
+                        <button type="submit" value="Book service" class="btn btn-secondary">See details</button>
                     </form>
-
-                    <a th:href="@{'petsitter?id=' + ${petsitter.petsitterId}}" class="btn btn-secondary">
-                        Petsitter details
-                    </a>
                     <!--ToDo --> add static button to book selected period from search form
 <!--                    <a th:href="@{'petsitter?id=' + ${petsitter.petsitterId}}" class="btn btn-secondary">-->
 <!--                        Book petsitter-->

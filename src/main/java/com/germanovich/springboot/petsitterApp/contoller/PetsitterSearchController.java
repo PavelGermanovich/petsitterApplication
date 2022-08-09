@@ -26,8 +26,6 @@ public class PetsitterSearchController {
 
     @GetMapping("/searchPetsitter")
     public String searchPetsitter(BasicPetsitterSearchDto basicPetsitterSearchDto, Model model) {
-        basicPetsitterSearchDto.setPetsitterService(PETSITTER_SERVICE.SITTING);
-
         List<PetsitterSearchResultDto> petsitterSearchResultList = searchService.getPetsittersBasedOnSearch(basicPetsitterSearchDto);
         //toDo add validation to the search, add specifications for different search options
 

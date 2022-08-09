@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <div th:replace="/fragments/header :: header-css"/>
     <title>Petsitter page</title>
@@ -116,9 +117,14 @@
                         <!--                        </div>-->
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBooking">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBooking" sec:authorize="hasAuthority('PET_OWNER')">
                     Create booking
                 </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createBooking"
+                        sec:authorize="hasAuthority('PET_SITTER')" disabled title="Button disabled for petsitter!">
+                    Create booking
+                </button>
+                <label class="label">booking are available only for petowners</label>
                 <div th:switch="${messagePetCreated}">
                     <div th:case="'Success'" class="alert alert-success">
                         <strong>Success!</strong> Booking performed successfully.

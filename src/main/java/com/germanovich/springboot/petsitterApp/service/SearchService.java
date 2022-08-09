@@ -29,7 +29,6 @@ public class SearchService {
                 filter(x -> x.getPetSitter().getPetSizeLimtis().getSizeMax() >= basicPetsitterSearchDto.getPetSize())
                 .collect(Collectors.toList());
 
-//        toDo скорее всего тут даты не включительно проверяются, нужно будет проверить, пока что у меня нет заказов
         petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
                 .noneMatch(order -> order.getStartDate().isBefore(basicPetsitterSearchDto.getEndDate()) &&
                         order.getEndDate().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
@@ -55,7 +54,6 @@ public class SearchService {
         petsitterSearchResultDto.setCostForServicePerUnit(petsitterServiceCost.getCostForServicePerUnit());
         petsitterSearchResultDto.setCity(petsitterServiceCost.getPetSitter().getUser().getCity().getName());
         petsitterSearchResultDto.setFileDbId(petsitterServiceCost.getPetSitter().getUser().getFileDb().getId());
-
 
         return petsitterSearchResultDto;
     }
