@@ -1,8 +1,6 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
 import com.germanovich.springboot.petsitterApp.dao.*;
-import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
-import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterProfileDto;
 import com.germanovich.springboot.petsitterApp.entity.*;
 import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;

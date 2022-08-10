@@ -126,7 +126,8 @@
                         <div class="input-field">
                             <label>PET TYPE</label>
                             <div class="input-select">
-                                <select data-trigger="" name="choices-single-defaul" th:field="*{petType}" id="petTypeSelect">
+                                <select data-trigger="" name="choices-single-defaul" th:field="*{petType}"
+                                        id="petTypeSelect">
                                     <option th:each="petT : ${petTypeList}" th:value="${petT.getId()}"
                                             th:text="${petT.getName()}">
                                     </option>
@@ -240,7 +241,8 @@
                     <span th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class=".text-light">Email Error</span>
                 </div>
                 <div class="col-md-12" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">
-                    <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class=".text-light">Email Error</span>
+                    <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}"
+                          class=".text-light">Email Error</span>
                 </div>
                 <div class="col-md-12" th:classappend="${#fields.hasErrors('endDate')} ? 'has-error'">
                     <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class=".text-light">endDate Error</span>

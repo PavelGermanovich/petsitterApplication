@@ -307,7 +307,7 @@
                 <tr>
                     <th>Order id</th>
                     <th>Service type</th>
-                    <th>Customer</th>
+                    <th>Name</th>
                     <th sec:authorize="hasAuthority('PET_SITTER')">Pet owner email</th>
                     <th sec:authorize="hasAuthority('PET_OWNER')">Pet sitter email</th>
                     <th>Pet type</th>
@@ -439,7 +439,7 @@
                 <tr>
                     <th>Order id</th>
                     <th>Service type</th>
-                    <th>Customer</th>
+                    <th>Name</th>
                     <th sec:authorize="hasAuthority('PET_SITTER')">Pet owner email</th>
                     <th sec:authorize="hasAuthority('PET_OWNER')">Pet sitter email</th>
                     <th>Pet type</th>
@@ -560,7 +560,7 @@
                 <thead>
                 <tr>
                     <th>Service type</th>
-                    <th>Customer</th>
+                    <th>Name</th>
                     <th sec:authorize="hasAuthority('PET_SITTER')">Pet owner email</th>
                     <th sec:authorize="hasAuthority('PET_OWNER')">Pet sitter email</th>
                     <th>Pet type</th>
@@ -574,12 +574,12 @@
                 <tbody>
                 <tr th:each="oldOrder: ${historyOrders}">
                     <th th:text="${oldOrder.getService().getServiceName()}">Name</th>
-                    <th th:text="${oldOrder.getPetowner().getUser().getEmail()}">Customer</th>
+                    <th th:text="${oldOrder.getPetowner().getUser().getNameFirst()}">Customer</th>
                     <th sec:authorize="hasAuthority('PET_SITTER')"
                         th:text="${oldOrder.getPetowner().getUser().getEmail()}">Pet owner email
                     </th>
                     <th sec:authorize="hasAuthority('PET_OWNER')"
-                        th:text="${oldOrder.getPetsitter().getUser().getNameFirst()}">Pet sitter email
+                        th:text="${oldOrder.getPetsitter().getUser().getEmail()}">Pet sitter email
                     </th>
                     <th th:text="${oldOrder.getPetType().getName()}">Pet type</th>
                     <th th:text="${oldOrder.getStartTime()}">Start date</th>

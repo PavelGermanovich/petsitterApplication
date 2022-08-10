@@ -39,8 +39,7 @@ public class OrderController {
         try {
             orderService.createPlannedOrder(petsitterOrderDto, principal);
             redirectAttributes.addFlashAttribute("orderBooked", "Success");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("orderBooked", "Failed");
         }
