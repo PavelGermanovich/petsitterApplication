@@ -22,7 +22,6 @@
             <legend>Search Service</legend>
         </fieldset>
         <input type="hidden" th:field="*{petsitterService}"/>
-
         <div class="inner-form">
             <header>
                 <div class="travel-type-wrap">
@@ -111,32 +110,6 @@
             </header>
             <div class="main-form" id="main-form">
                 <div class="row second">
-<!--                    <div class="input-wrap">-->
-<!--                        <div class="icon-wrap">-->
-<!--                            <svg xmlns="http://www.w3.org/2000/svg" width="200.000000pt" height="200.000000pt"-->
-<!--                                 viewBox="0 0 200.000000 200.000000" preserveAspectRatio="xMidYMid meet">-->
-<!--                                <g transform="translate(0.000000,200.000000) scale(0.100000,-0.100000)" fill="#000000"-->
-<!--                                   stroke="none">-->
-<!--                                    <path d="M632 1728 c-11 -18 -30 -58 -42 -88 -23 -57 -90 -294 -90 -316 0 -13 111 -58 214 -88 60 -18 75 -13 76 20 0 19 34 41 85 54 79 21 133 47 145 70 6 11 14 42 17 69 5 44 3 51 -18 64 -13 9 -54 19 -91 23 -66 7 -68 7 -93 49 -25 44 -46 55 -102 55 -32 0 -33 1 -33 41 0 79 -34 102 -68 47z"/>-->
-<!--                                    <path d="M1250 1358 c-16 -22 -30 -47 -30 -54 0 -7 -18 -15 -42 -19 -22 -4 -49 -17 -60 -29 -88 -99 -91 -105 -85 -147 6 -42 30 -79 53 -79 8 0 24 -16 36 -35 28 -43 41 -42 156 10 l78 36 11 71 c10 67 9 77 -17 165 -28 91 -43 123 -61 123 -5 0 -22 -19 -39 -42z"/>-->
-<!--                                    <path d="M459 1202 c-93 -244 -181 -553 -194 -677 l-8 -69 -33 38 c-28 32 -59 98 -97 209 -4 9 -11 17 -16 17 -31 0 -25 -161 9 -237 39 -89 92 -124 181 -122 24 0 79 0 121 -1 46 -1 121 8 185 21 59 12 139 22 177 23 53 1 71 5 79 18 8 12 1 105 -27 345 -20 180 -39 342 -42 358 -5 30 -10 32 -159 82 l-154 51 -22 -56z"/>-->
-<!--                                    <path d="M1295 966 c-33 -18 -78 -39 -101 -48 l-41 -16 9 -64 c4 -35 7 -148 6 -252 l-3 -189 24 -9 c14 -5 31 -6 38 -4 7 3 59 -1 116 -9 173 -25 299 -15 359 26 14 11 31 19 37 19 22 0 86 38 112 67 80 86 79 183 -5 246 -62 48 -56 108 18 174 38 33 40 57 5 68 -49 16 -122 -67 -135 -153 -9 -58 10 -97 62 -133 39 -27 44 -34 44 -69 0 -27 -8 -48 -26 -69 -32 -38 -74 -43 -74 -8 -1 70 -96 225 -204 332 -62 61 -156 128 -175 124 -3 -1 -33 -16 -66 -33z"/>-->
-<!--                                </g>-->
-<!--                            </svg>-->
-<!--                        </div>-->
-<!--                        <div class="input-field">-->
-<!--                            <label>SERVICE TYPE</label>-->
-<!--                            <div class="input-select">-->
-<!--                                <select data-trigger="" name="choices-single-defaul" th:field="*{petsitterService}"-->
-<!--                                        onchange="hideOption('hideDiv', this)">-->
-<!--                                    <option th:each="service : ${serviceType}" th:value="${service.name()}"-->
-<!--                                            th:text="${service.getRoleName()}">-->
-<!--                                    </option>-->
-<!--                                </select>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                    </div>-->
                     <div class="input-wrap" id="petTypeSitting">
                         <div class="icon-wrap">
                             <svg xmlns="http://www.w3.org/2000/svg" width="200.000000pt" height="200.000000pt"
@@ -188,7 +161,9 @@
 
                     </div>
 
+
                     <div class="input-wrap">
+
                         <div class="icon-wrap">
                             <svg xmlns="http://www.w3.org/2000/svg" width="200.000000pt" height="200.000000pt"
                                  viewBox="0 0 200.000000 200.000000" preserveAspectRatio="xMidYMid meet">
@@ -201,12 +176,14 @@
                                 </g>
                             </svg>
                         </div>
+
                         <div class="input-field">
-                            <label class="labels">Pet size</label>
+
                             <input type="text"
                                    class="form-control"
                                    placeholder="enter pet size"
                                    th:field="*{petSize}">
+
                         </div>
                     </div>
                 </div>
@@ -255,6 +232,18 @@
                 <div class="row last">
                     <button class="btn-search" type="submit">Search</button>
                 </div>
+                <div class="col-md-12" th:classappend="${#fields.hasErrors('petSize')} ? 'has-error'">
+                    <span th:if="${#fields.hasErrors('petSize')}" th:errors="*{petSize}">Email Error</span>
+                </div>
+                <div class="col-md-12" th:classappend="${#fields.hasErrors('startDate')} ? 'has-error'">
+                    <span th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class=".text-light">Email Error</span>
+                </div>
+                <div class="col-md-12" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">
+                    <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class=".text-light">Email Error</span>
+                </div>
+                <div class="col-md-12" th:classappend="${#fields.hasErrors('endDate')} ? 'has-error'">
+                    <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class=".text-light">endDate Error</span>
+                </div>
             </div>
         </div>
     </form>
@@ -289,11 +278,7 @@
         })
     }
 </script>
-<script>
-    function hideOption(divId, element) {
-        document.getElementById(divId).style.display = element.value == 'SITTING' ? 'block' : 'none';
-    }
-</script>
+
 <script>
     function showDogOptions(element) {
         document.getElementById('hideDiv').style.display = 'none';

@@ -4,7 +4,7 @@ import com.germanovich.springboot.petsitterApp.dao.PetOwnerRepository;
 import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dao.UserRepository;
 import com.germanovich.springboot.petsitterApp.entity.PetOwner;
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
+import com.germanovich.springboot.petsitterApp.entity.Petsitter;
 import com.germanovich.springboot.petsitterApp.entity.User;
 import com.germanovich.springboot.petsitterApp.validation.EmailExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public PetSitter registerPetsitter(PetSitter petSitter) throws EmailExistException {
+    public Petsitter registerPetsitter(Petsitter petSitter) throws EmailExistException {
         if (emailExist(petSitter.getUser().getEmail())) {
             throw new EmailExistException("Such email already registered!");
         }

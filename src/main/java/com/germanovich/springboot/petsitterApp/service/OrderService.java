@@ -4,7 +4,7 @@ import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.entity.OrderApproved;
 import com.germanovich.springboot.petsitterApp.entity.OrderSubmitted;
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
+import com.germanovich.springboot.petsitterApp.entity.Petsitter;
 import com.germanovich.springboot.petsitterApp.enums.ORDER_STATUS_ENUM;
 import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class OrderService {
     }
 
     public OrderSubmitted convertPetsitterOrderDtoToOrderPlanned(PetsitterOrderDto petsitterOrderDto) {
-        PetSitter petsitter = petsitterRepository.findById(petsitterOrderDto.getPetsitterId()).get();
+        Petsitter petsitter = petsitterRepository.findById(petsitterOrderDto.getPetsitterId()).get();
 
         OrderSubmitted orderSubmitted = new OrderSubmitted();
         orderSubmitted.setPetSitter(petsitter);

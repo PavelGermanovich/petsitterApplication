@@ -1,11 +1,9 @@
 package com.germanovich.springboot.petsitterApp.dto;
 
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
-import com.germanovich.springboot.petsitterApp.entity.PetsittingDetails;
+import com.germanovich.springboot.petsitterApp.entity.Petsitter;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.parameters.P;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -43,7 +41,7 @@ public class PetsitterProfileDto {
     private int costInHourDogWalking;
     private int costInDayPetsitting;
 
-    public static PetsitterProfileDto convertPetsitterProfileDtoFromPetsitter(PetSitter petSitter) {
+    public static PetsitterProfileDto convertPetsitterProfileDtoFromPetsitter(Petsitter petSitter) {
         PetsitterProfileDto petsitterProfileDto = new PetsitterProfileDto();
         petsitterProfileDto.setId(petSitter.getId());
         petsitterProfileDto.setNameFirst(petSitter.getUser().getNameFirst());

@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity(name = "petsitter")
 @Data
-public class PetSitter {
+public class Petsitter {
     @Id
     @Column(name = "petsitter_pk")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

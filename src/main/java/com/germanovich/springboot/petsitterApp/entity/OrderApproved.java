@@ -21,7 +21,7 @@ public class OrderApproved {
 
     @ManyToOne()
     @JoinColumn(name = "petsitter_fk")
-    private PetSitter petsitter;
+    private Petsitter petsitter;
 
     @ManyToOne()
     @JoinColumn(name = "petowner_fk")

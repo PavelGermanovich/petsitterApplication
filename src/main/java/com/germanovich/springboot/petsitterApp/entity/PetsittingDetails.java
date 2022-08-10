@@ -14,7 +14,7 @@ public class PetsittingDetails {
 
     @OneToOne
     @JoinColumn(name = "petsitter_fk")
-    private PetSitter petSitter;
+    private Petsitter petSitter;
 
     @Column(name = "dog_wanted", nullable = false, columnDefinition = "BIT")
     @Type(type = "numeric_boolean")

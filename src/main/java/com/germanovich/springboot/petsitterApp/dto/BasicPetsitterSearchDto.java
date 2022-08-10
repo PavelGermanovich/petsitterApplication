@@ -6,16 +6,24 @@ import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
 public class BasicPetsitterSearchDto {
     private PetType petType;
-    private int petSize;
+    @NotNull(message = "Pet size should be specified")
+    @Max(value = 140)
+    private Integer petSize;
     private PETSITTER_SERVICE petsitterService;
+    @NotNull(message = "Start date should be specified")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+    @NotNull(message = "City should be specified")
     private City city;
 }

@@ -85,7 +85,7 @@ public class ProfileController {
     }
 
     private String getSitterCommonDataProfile(Principal principal, Model model) {
-        PetSitter petSitter = petsitterRepository.findPetSitterByUserEmail(principal.getName());
+        Petsitter petSitter = petsitterRepository.findPetSitterByUserEmail(principal.getName());
         PetsitterProfileDto petsitterProfileDto = PetsitterProfileDto.convertPetsitterProfileDtoFromPetsitter(petSitter);
         model.addAttribute("sizeLimits", getPetSizeLimits());
         model.addAttribute("petsitterProfileDto", petsitterProfileDto);
@@ -173,7 +173,7 @@ public class ProfileController {
         userRepository.save(user);
 
         if (user.getUserRole().getRoleId().equals(USER_ROLE.PET_SITTER)) {
-            PetSitter petSitter = petsitterRepository.findPetSitterByUserEmail(user.getEmail());
+            Petsitter petSitter = petsitterRepository.findPetSitterByUserEmail(user.getEmail());
             return new ModelAndView("petsitterProfile", "petsitter", petSitter);
         } else {
             PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(user.getEmail());
@@ -193,14 +193,14 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("petsitterProfile", "petsitterProfileDto", petsitterProfileDto);
         }
-        PetSitter petSitter = petsitterProfileService.updatePetsitterProfile(petsitterProfileDto);
+        Petsitter petSitter = petsitterProfileService.updatePetsitterProfile(petsitterProfileDto);
 
         return new ModelAndView("redirect:/user");
     }
 
     @GetMapping(value = "/profile/petsitterInfo/{id}")
     public String showPetsitterInfo(@PathVariable("id") int petsitterId, BasicPetsitterSearchDto basicPetsitterSearchDto, Model model) {
-        PetSitter petsitterForBooking = petsitterRepository.findById(petsitterId).get();
+        Petsitter petsitterForBooking = petsitterRepository.findById(petsitterId).get();
 
         model.addAttribute("petsitterSearchDto", basicPetsitterSearchDto);
         model.addAttribute("petsitter", petsitterForBooking);

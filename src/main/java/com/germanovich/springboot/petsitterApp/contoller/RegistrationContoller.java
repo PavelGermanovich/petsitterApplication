@@ -1,9 +1,6 @@
 package com.germanovich.springboot.petsitterApp.contoller;
 
-import com.germanovich.springboot.petsitterApp.dao.CityRepository;
-import com.germanovich.springboot.petsitterApp.dao.PetSitterServiceCostRepository;
-import com.germanovich.springboot.petsitterApp.dao.ServiceRepository;
-import com.germanovich.springboot.petsitterApp.dao.UserRoleRepository;
+import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dao.validation.OnCreate;
 import com.germanovich.springboot.petsitterApp.entity.*;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
@@ -49,10 +46,17 @@ public class RegistrationContoller {
     @Autowired
     private FileStorageService storageService;
 
+    @Autowired
+    private PetSizeLimitRepository petSizeLimitRepository;
+
     @ModelAttribute
     private List<City> getCityList() {
         return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    private List<PetSizeLimit> getPetSizeLimits() {
+        return StreamSupport.stream(petSizeLimitRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/signup")
@@ -62,33 +66,34 @@ public class RegistrationContoller {
 
     @Validated(OnCreate.class)
     @PostMapping(value = "/petsitter/register")
-    public ModelAndView registerPetsitter(@Valid PetSitter petSitter,
+    public ModelAndView registerPetsitter(@Valid final Petsitter petsitter, final BindingResult bindingResult,
                                           @ModelAttribute("petwalkgingCheckbox") String petwalkgingCheckbox,
                                           @ModelAttribute("petsitCheckbox") String petsitCheckbox,
-                                          final BindingResult bindingResult,
                                           @RequestParam("file") MultipartFile multipartFile, Model model) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("registerPetsitter", "petSitter", petSitter);
+            model.addAttribute("sizeLimits", getPetSizeLimits());
+            return new ModelAndView("registerPetsitter", "petsitter", petsitter);
         }
 
         try {
-            petSitter.getUser().setFileDb(storageService.store(multipartFile));
+            petsitter.getUser().setFileDb(storageService.store(multipartFile));
         } catch (Exception e) {
-            bindingResult.addError(new FieldError("petSitter", "petSitter.user.fileDb", e.getMessage()));
+            bindingResult.addError(new FieldError("petsitter", "petSitter.user.fileDb", e.getMessage()));
         }
 
-        petSitter.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_SITTER));
+        petsitter.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_SITTER));
+        Petsitter petSitterRegistered;
         try {
-            petSitter = userService.registerPetsitter(petSitter);
+            petSitterRegistered = userService.registerPetsitter(petsitter);
         } catch (EmailExistException e) {
-            bindingResult.addError(new FieldError("petSitter", "petSitter.user", e.getMessage()));
-            return new ModelAndView("registerPetsitter", "petSitter", petSitter);
+            bindingResult.addError(new FieldError("petsitter", "petSitter.user", e.getMessage()));
+            return new ModelAndView("registerPetsitter", "petsitter", petsitter);
         }
 
         if (!petwalkgingCheckbox.isEmpty()) {
             PetsitterServiceCost petsitterServiceCost = new PetsitterServiceCost();
             petsitterServiceCost.setService(serviceRepository.findServiceByServiceName(PETSITTER_SERVICE.WALKING.getRoleName()));
-            petsitterServiceCost.setPetSitter(petSitter);
+            petsitterServiceCost.setPetSitter(petSitterRegistered);
             petSitterServiceCostRepository.save(petsitterServiceCost);
 
         }
@@ -96,14 +101,11 @@ public class RegistrationContoller {
         if (!petsitCheckbox.isEmpty()) {
             PetsitterServiceCost petsitterServiceCost = new PetsitterServiceCost();
             petsitterServiceCost.setService(serviceRepository.findServiceByServiceName(PETSITTER_SERVICE.SITTING.getRoleName()));
-            petsitterServiceCost.setPetSitter(petSitter);
+            petsitterServiceCost.setPetSitter(petSitterRegistered);
             petSitterServiceCostRepository.save(petsitterServiceCost);
         }
 
-        model.addAttribute("petsitterRegisterMessage", "Success");
-
         ModelAndView loginPage = new ModelAndView("redirect:/login");
-        loginPage.addObject("petsitterRegisterMessage", "Success");
         return loginPage;
     }
 

@@ -1,6 +1,5 @@
 package com.germanovich.springboot.petsitterApp.dao;
 
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
 import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
 import com.germanovich.springboot.petsitterApp.entity.key.PetsitterServiceKey;
 import org.springframework.data.jpa.repository.Query;

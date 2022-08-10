@@ -27,7 +27,7 @@ public class OrderSubmitted {
 
     @ManyToOne
     @JoinColumn(name = "petsitter_fk")
-    private PetSitter petSitter;
+    private Petsitter petSitter;
 
     @ManyToOne
     @JoinColumn(name = "petowner_fk")

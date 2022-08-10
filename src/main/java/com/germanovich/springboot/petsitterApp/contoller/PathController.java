@@ -49,7 +49,7 @@ public class PathController {
     @GetMapping("/register-petsitter")
     public String registerPetsitterPage(Model model) {
         model.addAttribute("cityList", getCityList());
-        model.addAttribute("petsitter", new PetSitter());
+        model.addAttribute("petsitter", new Petsitter());
         model.addAttribute("sizeLimits", getPetSizeLimits());
         return "registerPetsitter";
     }

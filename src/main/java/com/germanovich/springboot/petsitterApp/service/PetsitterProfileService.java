@@ -2,16 +2,13 @@ package com.germanovich.springboot.petsitterApp.service;
 
 import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterProfileDto;
-import com.germanovich.springboot.petsitterApp.entity.PetSitter;
+import com.germanovich.springboot.petsitterApp.entity.Petsitter;
 import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
 import com.germanovich.springboot.petsitterApp.entity.PetsittingDetails;
 import com.germanovich.springboot.petsitterApp.entity.key.PetsitterServiceKey;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Validator;
 
 @Service
 public class PetsitterProfileService {
@@ -45,13 +42,13 @@ public class PetsitterProfileService {
     @Autowired
     private ServiceRepository serviceRepository;
 
-    public PetSitter updatePetsitterProfile(PetsitterProfileDto petsitterProfileDto) {
-        PetSitter petSitter = convertPetsitterProfileDtoToPetsitter(petsitterProfileDto);
+    public Petsitter updatePetsitterProfile(PetsitterProfileDto petsitterProfileDto) {
+        Petsitter petSitter = convertPetsitterProfileDtoToPetsitter(petsitterProfileDto);
         return petsitterRepository.save(petSitter);
     }
 
-    public PetSitter convertPetsitterProfileDtoToPetsitter(PetsitterProfileDto petsitterProfileDto) {
-        PetSitter oldPetsitter = petsitterRepository.findById(petsitterProfileDto.getId()).get();
+    public Petsitter convertPetsitterProfileDtoToPetsitter(PetsitterProfileDto petsitterProfileDto) {
+        Petsitter oldPetsitter = petsitterRepository.findById(petsitterProfileDto.getId()).get();
 
         oldPetsitter.getUser().setNameFirst(petsitterProfileDto.getNameFirst());
         oldPetsitter.getUser().setNameLast(petsitterProfileDto.getNameLast());
