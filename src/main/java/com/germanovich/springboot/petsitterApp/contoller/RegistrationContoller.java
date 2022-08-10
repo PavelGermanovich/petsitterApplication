@@ -75,10 +75,12 @@ public class RegistrationContoller {
             return new ModelAndView("registerPetsitter", "petsitter", petsitter);
         }
 
-        try {
-            petsitter.getUser().setFileDb(storageService.store(multipartFile));
-        } catch (Exception e) {
-            bindingResult.addError(new FieldError("petsitter", "petSitter.user.fileDb", e.getMessage()));
+        if (!multipartFile.isEmpty()) {
+            try {
+                petsitter.getUser().setFileDb(storageService.store(multipartFile));
+            } catch (Exception e) {
+                bindingResult.addError(new FieldError("petsitter", "petSitter.user.fileDb", e.getMessage()));
+            }
         }
 
         petsitter.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_SITTER));
@@ -117,11 +119,14 @@ public class RegistrationContoller {
             return new ModelAndView("registerOwner", "petOwner", petOwner);
         }
 
-        try {
-            petOwner.getUser().setFileDb(storageService.store(multipartFile));
-        } catch (Exception e) {
-            bindingResult.addError(new FieldError("petOwner", "petOwner.user.fileDb", e.getMessage()));
+        if (!multipartFile.isEmpty()) {
+            try {
+                petOwner.getUser().setFileDb(storageService.store(multipartFile));
+            } catch (Exception e) {
+                bindingResult.addError(new FieldError("petOwner", "petOwner.user.fileDb", e.getMessage()));
+            }
         }
+
 
         petOwner.getUser().setUserRole(userRoleRepository.findByRoleId(USER_ROLE.PET_OWNER));
         try {

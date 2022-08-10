@@ -18,15 +18,16 @@
         <div class="col-md-3 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                 <img class="rounded-circle mt-5"
+                     th:with="imageURI=${pet.getFileDb() != null} ? ${pet.getFileDb().getId()} : '-1'"
                      width="150px"
-                     th:src="@{'pet/image/' + ${pet.getFileDb().getId()}}">
-                <!-- Button to Open the Modal -->
+                     src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                     th:src="@{'pet/image/' + ${imageURI}}">
 
                 <!-- The Modal -->
                 <div class="modal" id="updateImage">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form th:action="@{'image/' + ${pet.getFileDb().getId()}}" method="post" action="#"
+                            <form th:action="@{'pet/image/' + ${pet.id}}" method="post" action="#"
                                   enctype="multipart/form-data">
 
                                 <!-- Modal Header -->

@@ -202,7 +202,12 @@
                 <div>
                     <div th:each="pet : ${petowner.getPetList()}">
                             <figure class="figure">
-                                <img th:src="@{'pet/image/' + ${pet.getFileDb().getId()}}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
+<!--                                <img th:src="@{'pet/image/' + ${pet.getFileDb().getId()}}" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">-->
+                                <img class="rounded-circle mt-5"
+                                     th:with="imageURI=${pet.getFileDb() != null} ? ${pet.getFileDb().getId()} : '-1'"
+                                     width="150px"
+                                     src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                                     th:src="@{'pet/image/' + ${imageURI}}">
                                 <figcaption class="figure-caption" th:text="${pet.getPetType().getName()} + ': ' + ${pet.getPetName()} + ' ' + ${pet.getBreed()}">A caption for the above image.</figcaption>
                                 <a th:href="@{'pet?id=' + ${pet.getId()}}" class="btn btn-secondary">
                                     Pet details

@@ -50,7 +50,11 @@ public class PetsitterProfileDto {
         petsitterProfileDto.setPhone(petSitter.getUser().getPhone());
         petsitterProfileDto.setCityId(petSitter.getUser().getCity().getId());
         petsitterProfileDto.setEmail(petSitter.getUser().getEmail());
-        petsitterProfileDto.setFileDbId(petSitter.getUser().getFileDb().getId());
+        if (petSitter.getUser().getFileDb() != null) {
+            petsitterProfileDto.setFileDbId(petSitter.getUser().getFileDb().getId());
+        } else {
+            petsitterProfileDto.setFileDbId(-1);
+        }
         petsitterProfileDto.setDescription(petSitter.getDescription());
         petsitterProfileDto.setPetSizeLimitId(petSitter.getPetSizeLimtis().getId());
 

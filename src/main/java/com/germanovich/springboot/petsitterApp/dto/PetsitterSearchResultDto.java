@@ -1,6 +1,5 @@
 package com.germanovich.springboot.petsitterApp.dto;
 
-import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

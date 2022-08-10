@@ -6,6 +6,7 @@ import com.germanovich.springboot.petsitterApp.entity.OrderApproved;
 import com.germanovich.springboot.petsitterApp.entity.OrderSubmitted;
 import com.germanovich.springboot.petsitterApp.entity.Petsitter;
 import com.germanovich.springboot.petsitterApp.enums.ORDER_STATUS_ENUM;
+import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import com.germanovich.springboot.petsitterApp.enums.USER_ROLE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,15 +51,22 @@ public class OrderService {
         orderSubmitted.setService(serviceRepository.findServiceByServiceName(petsitterOrderDto.getService().getRoleName()));
         orderSubmitted.setPetOwner(petOwnerRepository.findById(petsitterOrderDto.getPetownerId()).get());
         orderSubmitted.setStartDate(petsitterOrderDto.getStartDate());
-        orderSubmitted.setEndDate(petsitterOrderDto.getEndDate());
-        orderSubmitted.setOrderStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.SUBMITTED.getName()));
-
-        int daysToPetsit = (int) DAYS.between(petsitterOrderDto.getStartDate(), petsitterOrderDto.getEndDate());
-        orderSubmitted.setUnits(daysToPetsit);
-        orderSubmitted.setPlannedPrice(daysToPetsit *
+        if (petsitterOrderDto.getService().equals(PETSITTER_SERVICE.WALKING)) {
+            orderSubmitted.setEndDate(petsitterOrderDto.getStartDate());
+            orderSubmitted.setUnits(petsitterOrderDto.getHours() == 0 ? 1 : petsitterOrderDto.getHours());
+        } else {
+            int daysToPetsit = (int) DAYS.between(petsitterOrderDto.getStartDate(), petsitterOrderDto.getEndDate());
+            orderSubmitted.setEndDate(petsitterOrderDto.getEndDate());
+            orderSubmitted.setUnits(daysToPetsit);
+        }
+        orderSubmitted.setPlannedPrice(orderSubmitted.getUnits() *
                 petsitter.getServiceProvidedWithCost().stream()
                         .filter(x -> x.getService().getServiceName().equals(petsitterOrderDto.getService()
                                 .getRoleName())).findFirst().get().getCostForServicePerUnit());
+        orderSubmitted.setOrderStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.SUBMITTED.getName()));
+
+        orderSubmitted.setPetType(petsitterOrderDto.getPetType());
+
         return orderSubmitted;
     }
 
@@ -97,8 +105,8 @@ public class OrderService {
         }
     }
 
-    public boolean cancelOrder(int orderPlannedId, String principalEmail) {
-        if (checkOrderSubmittedBelongsToPrincipal(orderPlannedId, principalEmail)) {
+    public boolean cancelOrder(int orderPlannedId, Principal principal) {
+        if (checkOrderSubmittedBelongsToPrincipal(orderPlannedId, principal)) {
             try {
                 OrderSubmitted existingOrder = orderSubmittedRepository.findById(orderPlannedId).get();
                 existingOrder.setOrderStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.DECLINED.getName()));
@@ -114,8 +122,8 @@ public class OrderService {
         }
     }
 
-    public boolean approveOrder(int orderPlannedId, String principalEmail) {
-        if (checkOrderSubmittedBelongsToPrincipal(orderPlannedId, principalEmail)) {
+    public boolean approveOrder(int orderPlannedId, Principal principal) {
+        if (checkOrderSubmittedBelongsToPrincipal(orderPlannedId, principal)) {
             OrderSubmitted existingOrder = orderSubmittedRepository.findById(orderPlannedId).get();
             existingOrder.setOrderStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.APPROVED.getName()));
             orderSubmittedRepository.save(existingOrder);
@@ -128,9 +136,14 @@ public class OrderService {
         }
     }
 
-    private boolean checkOrderSubmittedBelongsToPrincipal(int orderPlannedId, String principalEmail) {
+    private boolean checkOrderSubmittedBelongsToPrincipal(int orderPlannedId, Principal principal) {
         OrderSubmitted existingOrder = orderSubmittedRepository.findById(orderPlannedId).get();
-        return existingOrder.getPetSitter().getUser().getEmail().equals(principalEmail);
+        if (((UsernamePasswordAuthenticationToken) principal).getAuthorities().stream()
+                .anyMatch(x -> x.getAuthority().equals(USER_ROLE.PET_SITTER.toString()))) {
+            return existingOrder.getPetSitter().getUser().getEmail().equals(principal.getName());
+        } else {
+            return existingOrder.getPetOwner().getUser().getEmail().equals(principal.getName());
+        }
     }
 
     private boolean checkOrderApprovedBelongsToPrincipal(int orderPlannedId, String principalEmail) {

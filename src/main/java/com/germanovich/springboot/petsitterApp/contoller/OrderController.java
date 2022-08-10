@@ -38,11 +38,14 @@ public class OrderController {
                                           RedirectAttributes redirectAttributes) {
         try {
             orderService.createPlannedOrder(petsitterOrderDto, principal);
-            redirectAttributes.addFlashAttribute("messagePetCreated", "Success");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("messagePetCreated", "Failed");
+            redirectAttributes.addFlashAttribute("orderBooked", "Success");
         }
-        return ("redirect:/profile/petsitterInfo/" + petsitterOrderDto.getPetsitterId());
+        catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("orderBooked", "Failed");
+        }
+
+        return ("redirect:/bookings");
 
     }
 
@@ -60,17 +63,17 @@ public class OrderController {
     }
 
     @PostMapping(value = "/declineOrder")
-    public String cancelOrder(Model model, Principal principal, RedirectAttributes redirectAttributes,
-                              @RequestParam("id") int orderId) {
+    public String declineSubmittedOrder(Model model, Principal principal, RedirectAttributes redirectAttributes,
+                                        @RequestParam("id") int orderId) {
         try {
-            boolean isOrderCancelled = orderService.cancelOrder(orderId, principal.getName());
+            boolean isOrderCancelled = orderService.cancelOrder(orderId, principal);
             if (!isOrderCancelled) {
-                redirectAttributes.addFlashAttribute("message", "submittedDeclineFailed");
+                redirectAttributes.addFlashAttribute("declineSubmitted", "Failed");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "submittedDeclineFailed");
+            redirectAttributes.addFlashAttribute("declineSubmitted", "Failed");
         }
-        redirectAttributes.addFlashAttribute("message", "submittedRemovedSuccess");
+        redirectAttributes.addFlashAttribute("declineSubmitted", "Success");
         return "redirect:/bookings";
     }
 
@@ -78,14 +81,14 @@ public class OrderController {
     public String approveOrder(Principal principal, RedirectAttributes redirectAttributes,
                                @RequestParam("id") int orderId) {
         try {
-            boolean isOrderApproved = orderService.approveOrder(orderId, principal.getName());
+            boolean isOrderApproved = orderService.approveOrder(orderId, principal);
             if (!isOrderApproved) {
-                redirectAttributes.addFlashAttribute("message", "submittedApproveFailed");
+                redirectAttributes.addFlashAttribute("approveSubmitted", "Failed");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "submittedApproveFailed");
+            redirectAttributes.addFlashAttribute("approveSubmitted", "Failed");
         }
-        redirectAttributes.addFlashAttribute("message", "submittedApproveSuccess");
+        redirectAttributes.addFlashAttribute("approveSubmitted", "Success");
         return "redirect:/bookings";
     }
 
@@ -95,12 +98,12 @@ public class OrderController {
         try {
             boolean isOrderFinished = orderService.finishApprovedOrder(orderId, principal.getName());
             if (!isOrderFinished) {
-                redirectAttributes.addFlashAttribute("message", "finishApprovedFailed");
+                redirectAttributes.addFlashAttribute("finishApproved", "Failed");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "finishApprovedFailed");
+            redirectAttributes.addFlashAttribute("finishApproved", "Failed");
         }
-        redirectAttributes.addFlashAttribute("message", "finishApprovedSuccess");
+        redirectAttributes.addFlashAttribute("finishApproved", "Success");
         return "redirect:/bookings";
     }
 
@@ -110,12 +113,12 @@ public class OrderController {
         try {
             boolean isOrderDeclined = orderService.declineApprovedOrder(orderId, principal.getName());
             if (!isOrderDeclined) {
-                redirectAttributes.addFlashAttribute("message", "finishApprovedFailed");
+                redirectAttributes.addFlashAttribute("declineApproved", "Failed");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "finishApprovedFailed");
+            redirectAttributes.addFlashAttribute("declineApproved", "Failed");
         }
-        redirectAttributes.addFlashAttribute("message", "finishApprovedSuccess");
+        redirectAttributes.addFlashAttribute("declineApproved", "Success");
         return "redirect:/bookings";
     }
 }

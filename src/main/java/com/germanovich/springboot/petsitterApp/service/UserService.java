@@ -5,7 +5,6 @@ import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dao.UserRepository;
 import com.germanovich.springboot.petsitterApp.entity.PetOwner;
 import com.germanovich.springboot.petsitterApp.entity.Petsitter;
-import com.germanovich.springboot.petsitterApp.entity.User;
 import com.germanovich.springboot.petsitterApp.validation.EmailExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,31 +24,8 @@ public class UserService implements IUserService {
     @Autowired
     private PetOwnerRepository petOwnerRepository;
 
-    @Override
-    public User registerNewUser(User user) throws EmailExistException {
-        if (emailExist(user.getEmail())) {
-            throw new EmailExistException("Such email already registered!");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
     public boolean emailExist(String email) {
         return userRepository.findByEmail(email) != null;
-    }
-
-    @Override
-    public User updateExistingUser(User user) throws EmailExistException {
-        final Integer id = user.getId();
-        final String email = user.getEmail();
-        final User emailOwner = userRepository.findByEmail(email);
-        if (emailOwner != null && !id.equals(emailOwner.getId())) {
-            throw new EmailExistException("Email not available.");
-        }
-        if (user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        return userRepository.save(user);
     }
 
     @Override
@@ -71,12 +47,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public PetOwner updatePetowner(PetOwner petowner, String oldEmail) throws EmailExistException {
-        if (!oldEmail.equals(petowner.getUser().getEmail())) {
-            if (emailExist(petowner.getUser().getEmail())) {
-                throw new EmailExistException("Such email already registered!");
-            }
-        }
+    public PetOwner updatePetowner(PetOwner petowner) throws EmailExistException {
         return petOwnerRepository.save(petowner);
     }
 }

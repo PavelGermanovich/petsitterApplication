@@ -25,9 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
@@ -108,9 +106,8 @@ public class ProfileController {
                                  HttpServletResponse response) throws IOException {
         InputStream in;
         if (id == -1) {
-            in = getClass()
-                    .getResourceAsStream("/templates/image/profileImage.jpeg");
-            response.setContentType("image/jpeg");
+            in = new BufferedInputStream(new FileInputStream("src/main/resources/static/images/profileImage.jpg"));
+            response.setContentType("image/jpg");
         } else {
             FileDb fileDb = fileRepository.getById(id);
             in = new ByteArrayInputStream(fileDb.getData());
@@ -141,28 +138,27 @@ public class ProfileController {
             petOwnerExisting.getUser().setEmail(petownerForm.getUser().getEmail());
         }
 
-        Set<ConstraintViolation<PetOwner>> violations = validator.validate(petownerForm);
+        Set<ConstraintViolation<PetOwner>> violations = validator.validate(petOwnerExisting);
 
         if (!violations.isEmpty()) {
             model.addAttribute("message", "Failed");
-            return new ModelAndView("petownerProfile", "petOwner", petownerForm);
+            return new ModelAndView("redirect:/user");
         }
 
         try {
-            userService.updatePetowner(petOwnerExisting, petownerForm.getUser().getEmail());
+            userService.updatePetowner(petOwnerExisting);
         } catch (EmailExistException e) {
             bindingResult.addError(new FieldError("petOwner", "petOwner.user", e.getMessage()));
             model.addAttribute("message", "Failed");
             return new ModelAndView("registerOwner", "petOwner", petownerForm);
         }
 
-        model.addAttribute("message", "Success");
 
-        return new ModelAndView("petownerProfile");
+        return new ModelAndView("redirect:/user");
     }
 
     @PostMapping(value = "/updateProfileImage")
-    public ModelAndView updateProfileImage(@RequestParam("file") MultipartFile multipartFile, Principal principal) {
+    public String updateProfileImage(@RequestParam("file") MultipartFile multipartFile, Principal principal) {
         User user = userRepository.findByEmail(principal.getName());
         try {
             user.setFileDb(fileStorageService.store(multipartFile));
@@ -171,14 +167,7 @@ public class ProfileController {
             e.printStackTrace();
         }
         userRepository.save(user);
-
-        if (user.getUserRole().getRoleId().equals(USER_ROLE.PET_SITTER)) {
-            Petsitter petSitter = petsitterRepository.findPetSitterByUserEmail(user.getEmail());
-            return new ModelAndView("petsitterProfile", "petsitter", petSitter);
-        } else {
-            PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(user.getEmail());
-            return new ModelAndView("petownerProfile", "petOwner", petOwner);
-        }
+        return "redirect:/user";
     }
 
     @PostMapping(value = "/changePassword")
@@ -196,15 +185,5 @@ public class ProfileController {
         Petsitter petSitter = petsitterProfileService.updatePetsitterProfile(petsitterProfileDto);
 
         return new ModelAndView("redirect:/user");
-    }
-
-    @GetMapping(value = "/profile/petsitterInfo/{id}")
-    public String showPetsitterInfo(@PathVariable("id") int petsitterId, BasicPetsitterSearchDto basicPetsitterSearchDto, Model model) {
-        Petsitter petsitterForBooking = petsitterRepository.findById(petsitterId).get();
-
-        model.addAttribute("petsitterSearchDto", basicPetsitterSearchDto);
-        model.addAttribute("petsitter", petsitterForBooking);
-        model.addAttribute("petsitterOrder", new PetsitterOrderDto());
-        return "petsitterBookingInfo";
     }
 }

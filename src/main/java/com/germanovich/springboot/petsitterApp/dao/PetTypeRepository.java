@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PetTypeRepository extends CrudRepository<PetType, Integer> {
+    PetType findPetTypeByName(String name);
 }

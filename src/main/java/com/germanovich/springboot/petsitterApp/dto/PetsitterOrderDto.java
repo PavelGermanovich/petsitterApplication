@@ -1,5 +1,6 @@
 package com.germanovich.springboot.petsitterApp.dto;
 
+import com.germanovich.springboot.petsitterApp.entity.PetType;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +20,6 @@ public class PetsitterOrderDto {
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+    private PetType petType;
+    private int hours;
 }

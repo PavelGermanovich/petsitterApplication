@@ -10,6 +10,7 @@ import com.germanovich.springboot.petsitterApp.entity.PetType;
 import com.germanovich.springboot.petsitterApp.service.FileStorageService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,8 +48,9 @@ public class PetController {
                             @RequestParam("petImage") MultipartFile multipartFile, RedirectAttributes redirectAttrs) {
         PetOwner petOwner = petOwnerRepository.findPetOwnerByUserEmail(principal.getName());
         try {
-            //toDo add check if file null
-            pet.setFileDb(fileStorageService.store(multipartFile));
+            if (!multipartFile.isEmpty()) {
+                pet.setFileDb(fileStorageService.store(multipartFile));
+            }
             pet.setPetOwner(petOwner);
             petOwner.getPetList().add(pet);
             petRepository.save(pet);
@@ -69,9 +69,8 @@ public class PetController {
     public void showPetImage(@PathVariable int id, HttpServletResponse response) throws IOException {
         InputStream in;
         if (id == -1) {
-            in = getClass()
-                    .getResourceAsStream("/templates/image/profileImage.jpeg");
-            response.setContentType("image/jpeg");
+            in = new BufferedInputStream(new FileInputStream("src/main/resources/static/images/pet.png"));
+            response.setContentType("image/png");
         } else {
             FileDb fileDb = fileStorageService.getFile(id);
             in = new ByteArrayInputStream(fileDb.getData());
@@ -83,16 +82,16 @@ public class PetController {
 
     @PostMapping("/image/{id}")
     public String updatePetImage(@PathVariable int id, Model model, @RequestParam("file") MultipartFile petImageNew) throws IOException {
-        Pet pet = petRepository.findPetByFileDbId(id);
-        try {
-            //toDo add check if file null
-            pet.setFileDb(fileStorageService.updateImage(id, petImageNew));
-        } catch (Exception e) {
-            //ToDo add exceptions here
+        Pet pet = petRepository.findById(id).get();
+        if (!petImageNew.isEmpty()) {
+            try {
+                pet.setFileDb(fileStorageService.updateImage(id, petImageNew));
+                pet = petRepository.save(pet);
+            } catch (Exception e) {
+                //ToDo return errors here
+            }
         }
-        model.addAttribute("pet", pet);
-        return "redirect:/pet/" + pet.getId();
-
+        return "redirect:/pet?id=" + pet.getId();
     }
 
     @GetMapping

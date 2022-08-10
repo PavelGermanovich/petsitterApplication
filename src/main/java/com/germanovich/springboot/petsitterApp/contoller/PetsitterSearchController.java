@@ -2,13 +2,11 @@ package com.germanovich.springboot.petsitterApp.contoller;
 
 import com.germanovich.springboot.petsitterApp.dao.*;
 import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
+import com.germanovich.springboot.petsitterApp.dto.PetsitterOrderDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterSearchResultDto;
-import com.germanovich.springboot.petsitterApp.entity.City;
-import com.germanovich.springboot.petsitterApp.entity.PetSizeLimit;
-import com.germanovich.springboot.petsitterApp.entity.PetType;
-import com.germanovich.springboot.petsitterApp.entity.Service;
+import com.germanovich.springboot.petsitterApp.entity.*;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
-import com.germanovich.springboot.petsitterApp.service.DebugService;
+import com.germanovich.springboot.petsitterApp.enums.PET_TYPE_Enum;
 import com.germanovich.springboot.petsitterApp.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,9 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,8 +34,6 @@ public class PetsitterSearchController {
     @Autowired
     private SearchService searchService;
 
-    @Autowired
-    private DebugService debugService;
     @Autowired
     private PetTypeRepository petTypeRepository;
     @Autowired
@@ -85,12 +80,12 @@ public class PetsitterSearchController {
     }
 
     @GetMapping("/searchPetsitter")
-    public String searchPetsitter( @Valid @ModelAttribute("searchPetsitter") final BasicPetsitterSearchDto searchPetsitter, final BindingResult
-            bindingResult, Model model) {
-
+    public String searchPetsitter(@Valid @ModelAttribute("searchPetsitter") final BasicPetsitterSearchDto searchPetsitter,
+                                  final BindingResult bindingResult, Model model) {
         addSearchAttr(model);
-
-        if (searchPetsitter.getPetsitterService().equals(PETSITTER_SERVICE.SITTING)) {
+        if (searchPetsitter.getPetsitterService().equals(PETSITTER_SERVICE.WALKING)) {
+            searchPetsitter.setPetType(petTypeRepository.findPetTypeByName(PET_TYPE_Enum.DOG.getName()));
+        } else {
             if (searchPetsitter.getEndDate() == null || searchPetsitter.getStartDate().isAfter(searchPetsitter.getEndDate())) {
                 bindingResult.addError(new FieldError("searchPetsitter", "endDate",
                         "End date incorrect"));
@@ -101,11 +96,19 @@ public class PetsitterSearchController {
             return "home";
         }
 
-
         List<PetsitterSearchResultDto> petsitterSearchResultList = searchService.getPetsittersBasedOnSearch(searchPetsitter);
-
         model.addAttribute("petsittersList", petsitterSearchResultList);
         model.addAttribute("petsitterSearchDto", searchPetsitter);
         return "searchResult";
+    }
+
+    @GetMapping(value = "/profile/petsitterInfo/{id}")
+    public String showPetsitterInfo(@PathVariable("id") int petsitterId, BasicPetsitterSearchDto basicPetsitterSearchDto, Model model) {
+        Petsitter petsitterForBooking = petsitterRepository.findById(petsitterId).get();
+
+        model.addAttribute("petsitterSearchDto", basicPetsitterSearchDto);
+        model.addAttribute("petsitter", petsitterForBooking);
+        model.addAttribute("petsitterOrder", new PetsitterOrderDto());
+        return "petsitterBookingInfo";
     }
 }

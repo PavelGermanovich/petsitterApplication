@@ -29,7 +29,6 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <form action="#" th:action="@{/bookPetsitter}" th:object="${petsitterOrder}" method="post">
-                                <!--                                <input type="hidden" th:field="*{petsitterId}" th:value="${petsitter.getId()}">-->
 
                                 <!-- Modal Header -->
                                 <div class="modal-header">
@@ -48,10 +47,12 @@
                                            th:value="${petsitterSearchDto.startDate}"/>
                                     <input type="hidden" th:attr="name='endDate'"
                                            th:value="${petsitterSearchDto.endDate}"/>
+                                    <input type="hidden" th:attr="name='petType'"
+                                           th:value="${petsitterSearchDto.petType.id}"/>
 
 <!--                                    toDo add service cost heere!!-->
                                     <label class="labels"
-                                           th:text="${petsitter.getUser().getCity().getName()} + ', ' + ${petsitterSearchDto.getPetType().getName()} + ', ' + ${petsitterSearchDto.getPetsitterService().getRoleName()}">order
+                                           th:text="${petsitter.getUser().getCity().getName()} + ', ' + ${petsitterSearchDto.getPetType().name} + ', ' + ${petsitterSearchDto.getPetsitterService().getRoleName()}">order
                                         info</label>
 
                                 </div>
@@ -124,15 +125,9 @@
                         sec:authorize="hasAuthority('PET_SITTER')" disabled title="Button disabled for petsitter!">
                     Create booking
                 </button>
-                <label class="label">booking are available only for petowners</label>
-                <div th:switch="${messagePetCreated}">
-                    <div th:case="'Success'" class="alert alert-success">
-                        <strong>Success!</strong> Booking performed successfully.
-                    </div>
-                    <div th:case="'Failed'" class="alert alert-danger">
-                        <strong>Failure!</strong> Booking failed. Please try again
-                    </div>
-                </div>
+                <label sec:authorize="hasAuthority('PET_SITTER')">
+                    Booking not available for petsitters
+                </label>
             </div>
         </div>
         <div class="col-md-4">
@@ -148,38 +143,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-<script type="text/javascript">
-    function valueChanged() {
-        if ($('#petsitCheckbox').is(":checked")) {
-            $("#petsittingDetails").show();
-            $("#sitPetType").show();
-        } else {
-            $("#petsittingDetails").hide();
-            $("#sitPetType").hide();
-        }
-
-        if ($('#petwalkgingCheckbox').is(":checked")) {
-            $("#dogWalkingDetails").show();
-        } else {
-            $("#dogWalkingDetails").hide();
-        }
-    }
-
-    $(function () {
-        const checkbox = document.querySelector("#petsitCheckbox"); //get checkbox
-        const divPetsittDet = document.querySelector("#petsittingDetails");
-        const divPetsittType = document.querySelector("#sitPetType");
-        if (!checkbox.checked) {  //if checkbox not checked
-            divPetsittDet.style.display = "none"; //hide div
-            divPetsittType.style.display = "none"; //hide div
-        }
-
-        const dogWalkingCheckbox = document.querySelector("#petwalkgingCheckbox"); //get checkbox
-        const divDogWalkingDetails = document.querySelector("#dogWalkingDetails");
-        if (!dogWalkingCheckbox.checked) {  //if checkbox not checked
-            divDogWalkingDetails.style.display = "none"; //hide div
-        }
-    })
-</script>
 </body>
 </html>

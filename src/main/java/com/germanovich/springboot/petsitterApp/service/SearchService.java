@@ -22,6 +22,15 @@ public class SearchService {
     private PetSitterServiceCostRepository petSitterServiceCostRepository;
 
     public List<PetsitterSearchResultDto> getPetsittersBasedOnSearch(BasicPetsitterSearchDto basicPetsitterSearchDto) {
+        if (basicPetsitterSearchDto.getPetsitterService().equals(PETSITTER_SERVICE.SITTING)) {
+            return getPetsitterForSitting(basicPetsitterSearchDto);
+        } else {
+            return getPetsitterForWalking(basicPetsitterSearchDto);
+        }
+    }
+
+    public List<PetsitterSearchResultDto> getPetsitterForSitting(BasicPetsitterSearchDto basicPetsitterSearchDto) {
+
         List<PetsitterServiceCost> petsittersWithCost = petSitterServiceCostRepository
                 .findPetsitterByServiceName(basicPetsitterSearchDto.getPetsitterService().getRoleName());
 
@@ -30,6 +39,7 @@ public class SearchService {
                 .collect(Collectors.toList());
 
         petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
+                .filter(order -> order.getService().getServiceName().equals(basicPetsitterSearchDto.getPetsitterService().getRoleName()))
                 .noneMatch(order -> order.getStartDate().isBefore(basicPetsitterSearchDto.getEndDate()) &&
                         order.getEndDate().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
 
@@ -41,14 +51,27 @@ public class SearchService {
             }
         }
 
-        List<PetsitterSearchResultDto> petsitterSearchResultList = petsittersWithCost.stream()
+        return petsittersWithCost.stream()
                 .map(SearchService::convertPetsitterWithServiceCostToPetsitterSearchRst).collect(Collectors.toList());
-        return petsitterSearchResultList;
+    }
+
+    public List<PetsitterSearchResultDto> getPetsitterForWalking(BasicPetsitterSearchDto basicPetsitterSearchDto) {
+        List<PetsitterServiceCost> petsittersWithCost = petSitterServiceCostRepository
+                .findPetsitterByServiceName(basicPetsitterSearchDto.getPetsitterService().getRoleName());
+
+        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getUser().getCity().getId() == (basicPetsitterSearchDto.getCity().getId())).
+                filter(x -> x.getPetSitter().getPetSizeLimtis().getSizeMax() >= basicPetsitterSearchDto.getPetSize())
+                .collect(Collectors.toList());
+
+        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
+                .noneMatch(order -> order.getStartDate().isEqual(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
+
+        return petsittersWithCost.stream()
+                .map(SearchService::convertPetsitterWithServiceCostToPetsitterSearchRst).collect(Collectors.toList());
     }
 
     public static PetsitterSearchResultDto convertPetsitterWithServiceCostToPetsitterSearchRst(PetsitterServiceCost petsitterServiceCost) {
         PetsitterSearchResultDto petsitterSearchResultDto = new PetsitterSearchResultDto();
-
         petsitterSearchResultDto.setPetsitterId(petsitterServiceCost.getPetSitter().getId());
         petsitterSearchResultDto.setPetsitterName(petsitterServiceCost.getPetSitter().getUser().getNameFirst());
         petsitterSearchResultDto.setCostForServicePerUnit(petsitterServiceCost.getCostForServicePerUnit());
