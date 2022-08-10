@@ -53,7 +53,7 @@ public class OrderController {
     public String getBookings(Model model, Principal principal) {
         List<OrderSubmitted> draftOrders = orderService.getPlannedOrders(principal);
         List<OrderApproved> approvedOrders = orderService.getApprovedOrders(principal);
-        List<OrderApproved> othersOrders = orderService.getHistoryOrders(principal);
+        List<OrderApproved> othersOrders = orderService.getApprovedHistoryOrders(principal);
 
         model.addAttribute("draftBookings", draftOrders);
         model.addAttribute("approvedOrders", approvedOrders);
@@ -96,7 +96,7 @@ public class OrderController {
     public String finishApprovedOrder(Principal principal, RedirectAttributes redirectAttributes,
                                       @RequestParam("id") int orderId) {
         try {
-            boolean isOrderFinished = orderService.finishApprovedOrder(orderId, principal.getName());
+            boolean isOrderFinished = orderService.finishApprovedOrder(orderId, principal);
             if (!isOrderFinished) {
                 redirectAttributes.addFlashAttribute("finishApproved", "Failed");
             }
@@ -111,7 +111,7 @@ public class OrderController {
     public String declineApprovedOrder(Principal principal, RedirectAttributes redirectAttributes,
                                        @RequestParam("id") int orderId) {
         try {
-            boolean isOrderDeclined = orderService.declineApprovedOrder(orderId, principal.getName());
+            boolean isOrderDeclined = orderService.declineApprovedOrder(orderId, principal);
             if (!isOrderDeclined) {
                 redirectAttributes.addFlashAttribute("declineApproved", "Failed");
             }

@@ -13,7 +13,17 @@
 
     <div th:if="${param.error}" class="alert alert-danger">Invalid username and password.</div>
     <div th:if="${param.logout}">You have been log out</div>
+    <div th:switch="${petsitterRegistered}">
 
+        <div th:case="'Success'" class="alert alert-success">
+            <br>
+            <br>
+            <strong>Success!</strong> Petsitter registered
+        </div>
+        <div th:case="'Failed'" class="alert alert-danger">
+            <strong>Failure!</strong> Petsitter registration failed. Please try again
+        </div>
+    </div>
     <form th:action="@{/doLogin}" method="post" class="form-horizontal">
         <div class="form-group">
             <label class="control-label col-xs-2" for="username"> User Name: </label>

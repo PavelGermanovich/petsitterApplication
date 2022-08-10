@@ -255,7 +255,7 @@
         <strong>Success!</strong> Submitted booking approved successfully.
     </div>
     <div th:case="'Failed'" class="alert alert-danger">
-        <strong>Failure!</strong>  Submitted booking approve failed.
+        <strong>Failure!</strong> Submitted booking approve failed.
     </div>
 </div>
 <div th:switch="${declineSubmitted}">
@@ -266,7 +266,7 @@
         <strong>Success!</strong> Submitted booking declined successfully.
     </div>
     <div th:case="'Failed'" class="alert alert-danger">
-        <strong>Failure!</strong>  Submitted booking declined failed.
+        <strong>Failure!</strong> Submitted booking declined failed.
     </div>
 </div>
 <div th:switch="${finishApproved}">
@@ -277,7 +277,7 @@
         <strong>Success!</strong> Planned booking finished successfully.
     </div>
     <div th:case="'Failed'" class="alert alert-danger">
-        <strong>Failure!</strong>  Planned booking finish failed.
+        <strong>Failure!</strong> Planned booking finish failed.
     </div>
 </div>
 <div th:switch="${declineApproved}">
@@ -288,7 +288,7 @@
         <strong>Success!</strong> Planned booking declined successfully.
     </div>
     <div th:case="'Failed'" class="alert alert-danger">
-        <strong>Failure!</strong>  Planned booking decline failed.
+        <strong>Failure!</strong> Planned booking decline failed.
     </div>
 </div>
 <div class="container-xl">
@@ -305,35 +305,49 @@
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
+                    <th>Order id</th>
                     <th>Service type</th>
                     <th>Customer</th>
-                    <!--                    <th>Pet type</th>-->
+                    <th sec:authorize="hasAuthority('PET_SITTER')">Pet owner email</th>
+                    <th sec:authorize="hasAuthority('PET_OWNER')">Pet sitter email</th>
+                    <th>Pet type</th>
                     <th>Start time</th>
                     <th>End time</th>
                     <!--                    <th>Pet weight</th>-->
                     <th>Price</th>
-
+                    <th>Number of units</th>
                     <th>Actions</th>
 
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="order: ${draftBookings}">
-                    <th th:text="${order.getService().getServiceName()}">Name</th>
+                    <th th:text="${order.getId()}">Order id</th>
+                    <th th:text="${order.getService().getServiceName()}">Service</th>
                     <th th:text="${order.getPetOwner().getUser().getNameFirst()}">Customer</th>
-                    <!--                    <th th:text="${order()}">Pet type</th>-->
+                    <th sec:authorize="hasAuthority('PET_SITTER')"
+                        th:text="${order.getPetOwner().getUser().getEmail()}">Pet owner email
+                    </th>
+                    <th sec:authorize="hasAuthority('PET_OWNER')"
+                        th:text="${order.getPetSitter().getUser().getEmail()}">Pet sitter email
+                    </th>
+                    <th th:text="${order.getPetType().getName()}">Pet type</th>
+
                     <th th:text="${order.getStartDate()}">Start date</th>
                     <th th:text="${order.getEndDate()}">End date</th>
                     <th th:text="${order.getPlannedPrice()}">Price</th>
+                    <th th:text="${order.getUnits()} + ' ' + ${order.getService().getUnit().getUnitName()}">Units</th>
 
                     <td>
                         <a href="#editEmployeeModal" class="edit" data-toggle="modal"
-                           th:attr="data-target='#editEmployeeModal' + *{order.id}" sec:authorize="hasAuthority('PET_SITTER')">
+                           th:attr="data-target='#editEmployeeModal' + *{order.id}"
+                           sec:authorize="hasAuthority('PET_SITTER')">
                             <i class=" material-icons"
                                data-toggle="tooltip"
                                title="Approve">&#xe876;</i></a>
                         <!-- Approve order Modal HTML -->
-                        <div th:id="*{'editEmployeeModal'+{order.id}}" class="modal fade" sec:authorize="hasAuthority('PET_SITTER')">
+                        <div th:id="*{'editEmployeeModal'+{order.id}}" class="modal fade"
+                             sec:authorize="hasAuthority('PET_SITTER')">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <form action="#" id="approveOrder" th:action="@{'/approveOrder'}" method="post">
@@ -393,18 +407,18 @@
                 </tr>
                 </tbody>
             </table>
-<!--            <div class="clearfix">-->
-<!--                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>-->
-<!--                <ul class="pagination">-->
-<!--                    <li class="page-item disabled"><a href="#">Previous</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">1</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">2</a></li>-->
-<!--                    <li class="page-item active"><a href="#" class="page-link">3</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">4</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">5</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">Next</a></li>-->
-<!--                </ul>-->
-<!--            </div>-->
+            <!--            <div class="clearfix">-->
+            <!--                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>-->
+            <!--                <ul class="pagination">-->
+            <!--                    <li class="page-item disabled"><a href="#">Previous</a></li>-->
+            <!--                    <li class="page-item"><a href="#" class="page-link">1</a></li>-->
+            <!--                    <li class="page-item"><a href="#" class="page-link">2</a></li>-->
+            <!--                    <li class="page-item active"><a href="#" class="page-link">3</a></li>-->
+            <!--                    <li class="page-item"><a href="#" class="page-link">4</a></li>-->
+            <!--                    <li class="page-item"><a href="#" class="page-link">5</a></li>-->
+            <!--                    <li class="page-item"><a href="#" class="page-link">Next</a></li>-->
+            <!--                </ul>-->
+            <!--            </div>-->
         </div>
     </div>
 </div>
@@ -423,25 +437,42 @@
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
+                    <th>Order id</th>
                     <th>Service type</th>
                     <th>Customer</th>
-                    <!--                    <th>Pet type</th>-->
+                    <th sec:authorize="hasAuthority('PET_SITTER')">Pet owner email</th>
+                    <th sec:authorize="hasAuthority('PET_OWNER')">Pet sitter email</th>
+                    <th>Pet type</th>
                     <th>Start time</th>
                     <th>End time</th>
                     <!--                    <th>Pet weight</th>-->
                     <th>Price</th>
-                    <th>ACtions</th>
+                    <th>Number of units</th>
+                    <th>Status</th>
+                    <th>Actions</th>
 
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="approvedOrder: ${approvedOrders}">
-                    <th th:text="${approvedOrder.getService().getServiceName()}">Name</th>
+                    <th th:text="${approvedOrder.getId()}">Order id</th>
                     <th th:text="${approvedOrder.getPetowner().getUser().getNameFirst()}">Customer</th>
-                    <!--                    <th th:text="${order()}">Pet type</th>-->
+                    <th th:text="${approvedOrder.getService().getServiceName()}">Name</th>
+                    <th sec:authorize="hasAuthority('PET_SITTER')"
+                        th:text="${approvedOrder.getPetowner().getUser().getEmail()}">Pet owner email
+                    </th>
+                    <th sec:authorize="hasAuthority('PET_OWNER')"
+                        th:text="${approvedOrder.getPetsitter().getUser().getEmail()}">Pet sitter email
+                    </th>
+                    <th th:text="${approvedOrder.getPetType().getName()}">Pet type</th>
                     <th th:text="${approvedOrder.getStartTime()}">Start date</th>
                     <th th:text="${approvedOrder.getEndTime()}">End date</th>
                     <th th:text="${approvedOrder.getPrice()}">Price</th>
+                    <th th:text="${approvedOrder.getUnitsNumber()} + ' ' + ${approvedOrder.getService().getUnit().getUnitName()}">
+                        Units
+                    </th>
+                    <th th:text="${approvedOrder.getStatus().getStatusName()}">Status</th>
+
                     <td>
                         <a href="#finishOrderModal" class="edit" data-toggle="modal"
                            th:attr="data-target='#finishOrderModal' + *{approvedOrder.id}">
@@ -511,18 +542,6 @@
                 </tr>
                 </tbody>
             </table>
-<!--            <div class="clearfix">-->
-<!--                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>-->
-<!--                <ul class="pagination">-->
-<!--                    <li class="page-item disabled"><a href="#">Previous</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">1</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">2</a></li>-->
-<!--                    <li class="page-item active"><a href="#" class="page-link">3</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">4</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">5</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">Next</a></li>-->
-<!--                </ul>-->
-<!--            </div>-->
         </div>
     </div>
 </div>
@@ -542,38 +561,36 @@
                 <tr>
                     <th>Service type</th>
                     <th>Customer</th>
-                    <!--                    <th>Pet type</th>-->
+                    <th sec:authorize="hasAuthority('PET_SITTER')">Pet owner email</th>
+                    <th sec:authorize="hasAuthority('PET_OWNER')">Pet sitter email</th>
+                    <th>Pet type</th>
                     <th>Start time</th>
                     <th>End time</th>
-                    <!--                    <th>Pet weight</th>-->
                     <th>Price</th>
+                    <th>Number of units</th>
                     <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="oldOrder: ${historyOrders}">
                     <th th:text="${oldOrder.getService().getServiceName()}">Name</th>
-                    <th th:text="${oldOrder.getPetowner().getUser().getNameFirst()}">Customer</th>
-                    <!--                    <th th:text="${order()}">Pet type</th>-->
+                    <th th:text="${oldOrder.getPetowner().getUser().getEmail()}">Customer</th>
+                    <th sec:authorize="hasAuthority('PET_SITTER')"
+                        th:text="${oldOrder.getPetowner().getUser().getEmail()}">Pet owner email
+                    </th>
+                    <th sec:authorize="hasAuthority('PET_OWNER')"
+                        th:text="${oldOrder.getPetsitter().getUser().getNameFirst()}">Pet sitter email
+                    </th>
+                    <th th:text="${oldOrder.getPetType().getName()}">Pet type</th>
                     <th th:text="${oldOrder.getStartTime()}">Start date</th>
                     <th th:text="${oldOrder.getEndTime()}">End date</th>
                     <th th:text="${oldOrder.getPrice()}">Price</th>
+                    <th th:text="${oldOrder.getUnitsNumber()} + ' ' + ${oldOrder.getService().getUnit().getUnitName()}">
+                    <th th:text="${oldOrder.getStatus().getStatusName()}">Status</th>
                     <th th:text="${oldOrder.status.getStatusName()}">Status</th>
                 </tr>
                 </tbody>
             </table>
-<!--            <div class="clearfix">-->
-<!--                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>-->
-<!--                <ul class="pagination">-->
-<!--                    <li class="page-item disabled"><a href="#">Previous</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">1</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">2</a></li>-->
-<!--                    <li class="page-item active"><a href="#" class="page-link">3</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">4</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">5</a></li>-->
-<!--                    <li class="page-item"><a href="#" class="page-link">Next</a></li>-->
-<!--                </ul>-->
-<!--            </div>-->
         </div>
     </div>
 </div>

@@ -88,7 +88,7 @@ public class OrderService {
         }
     }
 
-    public List<OrderApproved> getHistoryOrders(Principal principal) {
+    public List<OrderApproved> getApprovedHistoryOrders(Principal principal) {
         if (((UsernamePasswordAuthenticationToken) principal).getAuthorities().stream()
                 .anyMatch(x -> x.getAuthority().equals(USER_ROLE.PET_SITTER.toString()))) {
             List<OrderApproved> petsitterOrders = orderSubmittedRepository.findPetsitterSubmittedDeclinedOrders(principal.getName())
@@ -104,6 +104,25 @@ public class OrderService {
             return petownerOrdersList;
         }
     }
+
+    public List<OrderApproved> getHistoryOrdersApproved(Principal principal) {
+        if (((UsernamePasswordAuthenticationToken) principal).getAuthorities().stream()
+                .anyMatch(x -> x.getAuthority().equals(USER_ROLE.PET_SITTER.toString()))) {
+            return orderApprovedRepository.findPetsitterDeclinedOrders(principal.getName());
+        } else {
+            return orderApprovedRepository.findPetownerDeclinedOrders(principal.getName());
+        }
+    }
+
+    public List<OrderSubmitted> getHistoryOrdersSubmitted(Principal principal) {
+        if (((UsernamePasswordAuthenticationToken) principal).getAuthorities().stream()
+                .anyMatch(x -> x.getAuthority().equals(USER_ROLE.PET_SITTER.toString()))) {
+            return orderSubmittedRepository.findPetsitterSubmittedDeclinedOrders(principal.getName());
+        } else {
+            return orderSubmittedRepository.findPetownerSubmittedDeclinedOrders(principal.getName());
+        }
+    }
+
 
     public boolean cancelOrder(int orderPlannedId, Principal principal) {
         if (checkOrderSubmittedBelongsToPrincipal(orderPlannedId, principal)) {
@@ -146,13 +165,18 @@ public class OrderService {
         }
     }
 
-    private boolean checkOrderApprovedBelongsToPrincipal(int orderPlannedId, String principalEmail) {
+    private boolean checkOrderApprovedBelongsToPrincipal(int orderPlannedId, Principal principal) {
         OrderSubmitted existingOrder = orderSubmittedRepository.findById(orderPlannedId).get();
-        return existingOrder.getPetSitter().getUser().getEmail().equals(principalEmail);
+        if (((UsernamePasswordAuthenticationToken) principal).getAuthorities().stream()
+                .anyMatch(x -> x.getAuthority().equals(USER_ROLE.PET_SITTER.toString()))) {
+            return existingOrder.getPetSitter().getUser().getEmail().equals(principal.getName());
+        } else {
+            return existingOrder.getPetOwner().getUser().getEmail().equals(principal.getName());
+        }
     }
 
-    public boolean declineApprovedOrder(int orderId, String principalEmail) {
-        if (checkOrderApprovedBelongsToPrincipal(orderId, principalEmail)) {
+    public boolean declineApprovedOrder(int orderId, Principal principal) {
+        if (checkOrderApprovedBelongsToPrincipal(orderId, principal)) {
             try {
                 OrderApproved existingOrder = orderApprovedRepository.findById(orderId).get();
                 existingOrder.setStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.DECLINED.getName()));
@@ -167,8 +191,8 @@ public class OrderService {
         }
     }
 
-    public boolean finishApprovedOrder(int orderId, String principalEmail) {
-        if (checkOrderApprovedBelongsToPrincipal(orderId, principalEmail)) {
+    public boolean finishApprovedOrder(int orderId, Principal principal) {
+        if (checkOrderApprovedBelongsToPrincipal(orderId, principal)) {
             OrderApproved existingOrder = orderApprovedRepository.findById(orderId).get();
             existingOrder.setStatus(orderStatusRepository.findOrderStatusByStatusName(ORDER_STATUS_ENUM.DONE.getName()));
             orderApprovedRepository.save(existingOrder);

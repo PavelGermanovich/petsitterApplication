@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -69,7 +70,8 @@ public class RegistrationContoller {
     public ModelAndView registerPetsitter(@Valid final Petsitter petsitter, final BindingResult bindingResult,
                                           @ModelAttribute("petwalkgingCheckbox") String petwalkgingCheckbox,
                                           @ModelAttribute("petsitCheckbox") String petsitCheckbox,
-                                          @RequestParam("file") MultipartFile multipartFile, Model model) {
+                                          @RequestParam("file") MultipartFile multipartFile, Model model,
+                                          RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("sizeLimits", getPetSizeLimits());
             return new ModelAndView("registerPetsitter", "petsitter", petsitter);
@@ -107,6 +109,7 @@ public class RegistrationContoller {
             petSitterServiceCostRepository.save(petsitterServiceCost);
         }
 
+        redirectAttributes.addFlashAttribute("petsitterRegistered", "Success");
         ModelAndView loginPage = new ModelAndView("redirect:/login");
         return loginPage;
     }

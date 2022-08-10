@@ -5,6 +5,7 @@ import com.germanovich.springboot.petsitterApp.dao.PetsitterRepository;
 import com.germanovich.springboot.petsitterApp.dto.BasicPetsitterSearchDto;
 import com.germanovich.springboot.petsitterApp.dto.PetsitterSearchResultDto;
 import com.germanovich.springboot.petsitterApp.entity.PetsitterServiceCost;
+import com.germanovich.springboot.petsitterApp.enums.ORDER_STATUS_ENUM;
 import com.germanovich.springboot.petsitterApp.enums.PETSITTER_SERVICE;
 import com.germanovich.springboot.petsitterApp.enums.PET_TYPE_Enum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,8 @@ public class SearchService {
                 filter(x -> x.getPetSitter().getPetSizeLimtis().getSizeMax() >= basicPetsitterSearchDto.getPetSize())
                 .collect(Collectors.toList());
 
-        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
-                .filter(order -> order.getService().getServiceName().equals(basicPetsitterSearchDto.getPetsitterService().getRoleName()))
-                .noneMatch(order -> order.getStartDate().isBefore(basicPetsitterSearchDto.getEndDate()) &&
-                        order.getEndDate().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
+        petsittersWithCost = filterOrderPlannedForSitting(basicPetsitterSearchDto, petsittersWithCost);
+        petsittersWithCost = filterOrderApprovedForSitting(basicPetsitterSearchDto, petsittersWithCost);
 
         if (basicPetsitterSearchDto.getPetsitterService().getRoleName().equals(PETSITTER_SERVICE.SITTING.getRoleName())) {
             if (basicPetsitterSearchDto.getPetType().getName().equals(PET_TYPE_Enum.CAT.getName())) {
@@ -53,6 +52,28 @@ public class SearchService {
 
         return petsittersWithCost.stream()
                 .map(SearchService::convertPetsitterWithServiceCostToPetsitterSearchRst).collect(Collectors.toList());
+    }
+
+    private List<PetsitterServiceCost> filterOrderPlannedForSitting(BasicPetsitterSearchDto basicPetsitterSearchDto,
+                                                                    List<PetsitterServiceCost> petsittersWithCost) {
+        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getPlannedOrders().stream()
+                .filter(order -> order.getService().getServiceName().equals(basicPetsitterSearchDto
+                        .getPetsitterService().getRoleName()) && order.getOrderStatus().getStatusName()
+                        .equals(ORDER_STATUS_ENUM.SUBMITTED.getName()))
+                .noneMatch(order -> order.getStartDate().isBefore(basicPetsitterSearchDto.getEndDate()) &&
+                        order.getEndDate().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
+        return petsittersWithCost;
+    }
+
+    private List<PetsitterServiceCost> filterOrderApprovedForSitting(BasicPetsitterSearchDto basicPetsitterSearchDto,
+                                                                    List<PetsitterServiceCost> petsittersWithCost) {
+        petsittersWithCost = petsittersWithCost.stream().filter(x -> x.getPetSitter().getApprovedOrders().stream()
+                .filter(order -> order.getService().getServiceName().equals(basicPetsitterSearchDto
+                        .getPetsitterService().getRoleName()) && order.getStatus().getStatusName()
+                        .equals(ORDER_STATUS_ENUM.APPROVED.getName()))
+                .noneMatch(order -> order.getStartTime().isBefore(basicPetsitterSearchDto.getEndDate()) &&
+                        order.getEndTime().isAfter(basicPetsitterSearchDto.getStartDate()))).collect(Collectors.toList());
+        return petsittersWithCost;
     }
 
     public List<PetsitterSearchResultDto> getPetsitterForWalking(BasicPetsitterSearchDto basicPetsitterSearchDto) {
